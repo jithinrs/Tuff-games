@@ -1,0 +1,83 @@
+{% extends 'useraccount/baseaccountt.html' %}
+{% load static %}
+
+{% block title %}
+{{request.user.first_name}}
+{% endblock %}
+
+{% block usertitle %} 
+Dashboard
+{% endblock %}
+
+{% block dashboardactive %} 
+active
+{% endblock %}
+
+
+
+
+
+{% block testing %}
+
+<div class="card shadow my-5">
+    <div class="card-body">
+        <h6>Basic Details</h6>
+        <hr>
+        <form method="POST" class="post-form" action="{% url 'useraddaddress' %}">  
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="">Name</label>
+                    <input class="form-control" type="text" name="name" placeholder="Enter your name">
+                </div>
+                {% for d in data %}
+                <!-- <div class="col-md-6 mt-2">
+                    <label for="">Email Address</label> -->
+                    <input class="form-control" type="text" name="user_id" hidden  value="{{d.user_id.id}}">
+                <!-- </div> -->
+                {% endfor %}
+                <div class="col-md-6 mt-2">
+                    <label for="">Email Address</label>
+                    <input class="form-control" type="email" name="email" placeholder="Enter you email">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label for="">Phone Number</label>
+                    <input class="form-control" type="text" name="mobile" placeholder="Enter you phone">
+                </div>
+                <div class="col-md-12 mt-2">
+                    <label for="">Address lane 1</label>
+                    <input class="form-control" type="text" name="address_1" placeholder="Address lane 1">
+                </div>
+                <div class="col-md-12 mt-2">
+                    <label for="">Address Lane 2</label>
+                    <input class="form-control" type="text" name="address_2" placeholder="Address lane 2">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label for="">City</label>
+                    <input class="form-control" type="text" name="city" placeholder="Enter you city">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label for="">District</label>
+                    <input class="form-control" type="text" name="district" placeholder="Enter you district">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label for="">State</label>
+                    <input class="form-control" type="text" name="state" placeholder="Enter you state">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label for="">Pin code</label>
+                    <input class="form-control" type="text" name="pincode" placeholder="Enter you Pin code">
+                </div>
+                <div>
+                    <button class="btn btn-primary mt-2" type="submit">Add address</button>
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
+    {% for message in messages %}
+    {{message}}
+    {% endfor %}
+{% endblock %}
+
+

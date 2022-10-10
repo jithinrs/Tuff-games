@@ -1,0 +1,407 @@
+{% extends 'userside/userbase.html' %}
+{% load static %}
+
+{% block testing %}
+
+<section class="banner-area organic-breadcrumb mb-5">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1>Check out </h1>
+                <nav class="d-flex align-items-center">
+                    <a href="{% url 'home' %}">Home<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="#">Checkout</a>
+                    <!-- <a href="category.html">Fashon Category</a> -->
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- <div class="container" style="height:50px ;">
+    <div id="msg">
+
+    </div>
+</div>
+ -->
+
+
+<div class="container mt-3 mb-3">
+    <div class="row">
+        <!-- <form action="{% url 'placeorder' %}" method="POST">
+        {% csrf_token %} -->
+        <div class="col-md-7">
+            <div class="card shadow">
+                <div class="card-body">
+
+                    {% for a in addr %}
+                    <div class="row">
+                        <div class="col-md-1">
+                            <a hx-get="{% url 'checkoutaddress' a.id %}" hx-trigger="click" hx-target="#addresschange"
+                                hx-swap="outerHTML">
+                                <input name="test" type="radio">
+                            </a>
+                        </div>
+                        <div class="col-md-11" style="margin-left:-20px ;">
+                            {{a.name}} <br>
+                            {{a.user_id.mobile}} |
+                            {{a.user_id.email}} <br>
+                            {{a.address_1}} <br>
+                            {{a.address_2}}
+                            {{a.city}}
+                            {{a.state}}
+                            {{a.pincode}}
+                            <br> <br>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <a href="{% url 'add_checkout_addr' %}" class="btn btn-primary mb-1 mx-5" style="width:170px ;"><i
+                        class="fa-solid fa-plus"></i> Add new address</a>
+            </div>
+            <form action="{% url 'placeorder' %}" method="POST">
+                {% csrf_token %}
+                <div class="card shadow my-4 checkout-form d-none">
+                    <div class="card-body">
+                        <h4 style="font-weight:bolder ;">Shipping Address</h6>
+                            <hr>
+                            {% include 'userside/checkoutaddr.html' %}
+                    </div>
+                </div>
+        </div>
+        <div class="col-md-5">
+
+            <div class="card shadow mb-4">
+                <div>
+                    <div class="card-body d-flex justify-content-center align-items-center " style="gap:10px ;">
+                        <label class="badge" style="font-size:20px ;" for="">Coupon:</label>
+                        <input type="text" name="coupon" style="width:200px ;" class="form-control">
+                        <button type="button" class="btn btn-danger couponbutton">Check</button>
+                    </div>
+                    {% if coupon_status == True %}
+                    <div class="container">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                           Code <strong>{{coupon_codes}}</strong> is activated!!
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    {% endif %}
+                    <div class="container mb-2" >
+                        <div id="msg">
+                        
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card shadow">
+                <div class="card-body">
+                    <h6>Order Summary</h6>
+
+                    {% if cartitems %}
+                    <table class="table table stripeds table-bordereds">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Qty</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cartitems %}
+                            <tr class="">
+                                <td><img height="40px" src="{{item.product.product_image.url}}" alt="">
+                                    {{item.product.product_name}}</td>
+                                <td>x{{item.product_qty}}</td>
+                                <td>
+                                    {% if item.product.disc_details.all %}
+                                    <del class="text-dark">₹{{item.product.product_max_price}}</del>
+                                    {% else %}
+                                    ₹{{item.product.product_max_price}}
+                                    {% endif %}<br>
+                                    {% for discount in item.product.disc_details.all %}
+                                    ₹{{ discount.discountprice }}
+                                    {% endfor %}
+
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <hr>
+                    <h6 class="d-flex justify-content-between container"><span>Total
+                            :</span><span>₹{{total_price}}</span></h6>
+                    <h6 class="d-flex justify-content-between container">
+                        <span>Discount:</span><span>-₹{{discount_red}}</span>
+                    </h6>
+                    {% if coupon_status == True %}
+                    <h6 class="d-flex justify-content-between container">
+                        <span>Coupon discount:</span><span>-₹{{coup_red}}</span>
+                    </h6>
+                    {% endif %}
+                    <br>
+                    <h5 class="d-flex justify-content-between container"><span>Grand Total
+                            :</span><span>₹{{final_price}} </span></h5>
+                    <input type="hidden" value="COD" name="payment_mode">
+                    <div class="d-flex justify-content-center mt-5">
+                        <button style=" font-size: 16px; border-radius:4px ; margin-bottom: 14px; height: 45px "
+                            type="submit" class="genric-btn btn-primary circle mt-1 container" id="testing232">Cash On
+                            Delivery</button>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <button
+                            style="background-color: rgb(173, 204, 235); font-size: 16px; border-radius: 4px; margin-bottom: 14px; height: 45px "
+                            type="button" class="genric-btn primary circle mt-1 paywithrazer container"
+                            id="rzp-button1"><img width="150px" src="{% static 'temp/img/razorpay-icon.png' %}"
+                                alt=""></button>
+                    </div>
+                    <!-- <div class="d-flex justify-content-center">
+                        <button style="width:300px ; background-color: blue; font-size: 16px;" type="submit"
+                            class="genric-btn primary circle mt-1" id="testing232">Pay with
+                            Paypal</button>
+                    </div> -->
+                    <div id="paypal-button-container"></div>
+                    {% else %}
+                    <h4>Your cart is empty</h4>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
+
+{% for message in messages %}
+{{message}}
+{% endfor %}
+
+
+<script src="https://unpkg.com/htmx.org@1.8.0"
+    integrity="sha384-cZuAZ+ZbwkNRnrKi05G/fjBX+azI9DNOkNYysZ0I/X5ZFgsmMiBXgDZof30F5ofc"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+    integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script
+    src="https://www.paypal.com/sdk/js?client-id=AXVlzJOrsESjZE4ewaiA7nTH0ssjdm-_qlkwhFW2D3ooX7MSIPgOtTMccifJqRlVAHwfYHXPzwISBuch&currency=USD"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
+<script>
+    paypal.Buttons({
+        onClick: function (data, action) {
+            var name = $("[name ='name']").val();
+            var email = $("[name ='email']").val();
+            var mobile = $("[name ='mobile']").val();
+            var address_1 = $("[name ='address_1']").val();
+            var address_2 = $("[name ='address_2']").val();
+            var city = $("[name ='city']").val();
+            var district = $("[name ='district']").val();
+            var state = $("[name ='state']").val();
+            var pincode = $("[name ='pincode']").val();
+            var token = $("[name = 'csrfmiddlewaretoken']").val()
+
+            if (name == "" || email == "" || mobile == "" || address_1 == "" || address_2 == "" || city == "" || district == "" || state == "" || pincode == "") {
+                alert("All fields are mandatory")
+                return false
+            } else {
+                return true;
+            }
+        },
+        // Sets up the transaction when a payment button is clicked
+        createOrder: (data, actions) => {
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        value: '10'//'{{disc_prices}}' // Can also reference a variable or function
+                    }
+                }]
+            });
+        },
+        // Finalize the transaction after payer approval
+        onApprove: (data, actions) => {
+            return actions.order.capture().then(function (orderData) {
+                // Successful capture! For dev/demo purposes:
+                console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+                // alert(orderData.id)
+                //const transaction = orderData.purchase_units[0].payments.captures[0];
+                // alert(`Transaction ${transaction.status}: ${transaction.id}\n\nSee console for all available details`);
+                var name = $("[name ='name']").val();
+                var email = $("[name ='email']").val();
+                var mobile = $("[name ='mobile']").val();
+                var address_1 = $("[name ='address_1']").val();
+                var address_2 = $("[name ='address_2']").val();
+                var city = $("[name ='city']").val();
+                var district = $("[name ='district']").val();
+                var state = $("[name ='state']").val();
+                var pincode = $("[name ='pincode']").val();
+                var token = $("[name = 'csrfmiddlewaretoken']").val()
+                data = {
+                    "name": name,
+                    "email": email,
+                    "mobile": mobile,
+                    "address_1": address_1,
+                    "address_2": address_2,
+                    "city": city,
+                    "district": district,
+                    "state": state,
+                    "pincode": pincode,
+                    "payment_mode": "Paid by PayPal",
+                    "payment_id": orderData.id,
+                    csrfmiddlewaretoken: token
+                }
+                $.ajax({
+                    method: "POST",
+                    url: "/place-order",
+                    data: data,
+                    success: function (responsec) {
+                        redirect_url = "{% url 'ordersuccess' %}"
+                        console.log(responsec.status);
+                        window.location.href = redirect_url
+                    }
+                })
+                // When ready to go live, remove the alert and show a success message within this page. For example:
+                // const element = document.getElementById('paypal-button-container');
+                // element.innerHTML = '<h3>Thank you for your payment!</h3>';
+                // Or go to another URL:  actions.redirect('thank_you.html');
+            });
+        }
+    }).render('#paypal-button-container');
+</script>
+
+
+
+
+
+<script>
+    $(document).ready(function () {
+
+        $('.paywithrazer').click(function (e) {
+            e.preventDefault;
+
+            var name = $("[name ='name']").val();
+            var email = $("[name ='email']").val();
+            var mobile = $("[name ='mobile']").val();
+            var address_1 = $("[name ='address_1']").val();
+            var address_2 = $("[name ='address_2']").val();
+            var city = $("[name ='city']").val();
+            var district = $("[name ='district']").val();
+            var state = $("[name ='state']").val();
+            var pincode = $("[name ='pincode']").val();
+            var token = $("[name = 'csrfmiddlewaretoken']").val()
+
+            if (name == "" || email == "" || mobile == "" || address_1 == "" || address_2 == "" || city == "" || district == "" || state == "" || pincode == "") {
+                alert("All fields are mandatory")
+                return false
+            } else {
+                $.ajax({
+                    method: "GET",
+                    url: "/proceed-to-pay",
+                    success: function (response) {
+                        // console.log(email);
+                        console.log(response);
+
+                        // console.log(response);
+                        var options = {
+                            "key": "rzp_test_6K5F5F2dkW3hkf", // Enter the Key ID generated from the Dashboard
+                            "amount": 1, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                            "currency": "INR",
+                            "name": "Jithu Corp test",
+                            "description": "Test Transaction",
+                            "image": "https://example.com/your_logo",
+                            "order_id": response.client.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                            // "callback_url": "https://eneqd3r9zrjok.x.pipedream.net/",
+                            "handler": function (responseb) {
+                                // alert(responseb.razorpay_payment_id + "poda");
+
+                                data = {
+                                    "name": name,
+                                    "email": email,
+                                    "mobile": mobile,
+                                    "address_1": address_1,
+                                    "address_2": address_2,
+                                    "city": city,
+                                    "district": district,
+                                    "state": state,
+                                    "pincode": pincode,
+                                    "payment_mode": "Paid by Razerpay",
+                                    "payment_id": responseb.razorpay_payment_id,
+                                    csrfmiddlewaretoken: token
+                                }
+                                $.ajax({
+                                    method: "POST",
+                                    url: "/place-order",
+                                    data: data,
+                                    success: function (responsec) {
+                                        console.log(responsec.status);
+                                        redirect_url = "{% url 'ordersuccess' %}"
+                                        window.location.href = redirect_url
+
+                                    }
+                                })
+                            },
+                            "prefill": {
+                                "name": name,
+                                "email": email,
+                                "contact": mobile
+                            },
+                            "notes": {
+                                "address": "Razorpay Corporate Office"
+                            },
+                            "theme": {
+                                "color": "#3399cc"
+                            }
+                        };
+                        var rzp1 = new Razorpay(options);
+
+                        rzp1.open();
+                    }
+                })
+
+
+
+
+            }
+
+        })
+
+
+        $('.couponbutton').click(function (e) {
+            e.preventDefault;
+            // console.log("podapatti workjsahdjh");
+            var coupon = $("[name ='coupon']").val();
+            var token = $("[name = 'csrfmiddlewaretoken']").val()
+            data = {
+                "code": coupon,
+                csrfmiddlewaretoken: token
+            }
+            $.ajax({
+                method: "POST",
+                url: "/checkout/",
+                data: data,
+                success: function (response7) {
+                    console.log(response7.Status);
+                    if (response7.Status == "Coupon Activated") {
+                        window.location.reload();
+                    } else if (response7.Status == "Coupon changed"){
+                        window.location.reload();
+                    } else {
+                    $('#msg').empty()
+                    $('#msg').html(response7.Status).fadeIn('fast').addClass('cart-styling').css('background-image', 'linear-gradient(to right, rgb(238, 10, 10), rgb(255, 255, 255)');
+
+                    $('#msg').delay(2500).fadeOut('slow');
+                    
+                    // alert(response7.Status)
+                    }
+                }
+            })
+        })
+
+    })
+</script>
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends 'adminside/adminbase.html' %}
+{% load static %}
+
+{% block title %}
+user
+{% endblock %}
+
+{% block useclass %}
+text-white
+{% endblock %}
+
+{% block tablecontent %}
+Users List
+{% endblock %}
+
+{% block maincontent %}
+<div class="mb-4">
+    <form action="{% url 'user_display' %}" method="">
+        <input type="text" class="form-control text-white" style="width:250px ; display: inline;" placeholder="search..." name="key">
+        <button style="height:38px ;" class="btn btn-primary" type="submit">Search</button>
+    </form>
+</div>
+<table class="table">
+    <thead>
+        <tr class="table-dark text-center text-white">
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Mobile</th>
+            <th>Block/Un Block</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for object in user %}
+        <tr class="text-center align-middle text-white">
+            <td>
+                {{object.first_name}}
+            </td>
+            <td>{{object.last_name}}</td>
+            <td>{{object.email}}</td>
+            <td>{{object.mobile}}</td>
+
+            {% if object.is_active %}
+            <td><a href="" class="btn btn-danger" id="del-confirm-link" data-bs-toggle="modal"
+                    data-bs-target="#BanModal{{object.id}}">Block</a></td>
+            {%else%}
+            <td><a href="" class="btn btn-primary" id="del-confirm-link" data-bs-toggle="modal"
+                    data-bs-target="#UnbanModal{{object.id}}">Unblock</a></td>
+            {%endif%}
+            <!-- Block Modal -->
+
+            <div class="modal fade" id="BanModal{{object.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Block</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Do you want to Block this user?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <form action="{% url 'user_block' id=object.id  flag=1 %}" method="post"
+                                id="del-confirm-button">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary">Yes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- UnBlock Modal -->
+            <div class="modal fade" id="UnbanModal{{object.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Unblock</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Unblock this user?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <form action="{% url 'user_block' id=object.id  flag=0 %}" method="post"
+                                id="del-confirm-button">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary">Yes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% if user.has_previous %}
+<a class="btn btn-primary" href="?page=1">&laquo First</a>
+<a class="btn btn-primary" href="?page={{ user.previous_page_number }}">Previous</a>
+
+{% endif %}
+
+<span class="badge bg-primary">Page {{user.number}} of {{user.paginator.num_pages}}</span>
+
+
+{% if user.has_next %}
+<a class="btn btn-primary" href="?page={{ user.next_page_number }}">Next</a>
+<a class="btn btn-primary" href="?page={{user.paginator.num_pages}}">Last &raquo</a>
+
+{% endif %}
+{% endblock %}

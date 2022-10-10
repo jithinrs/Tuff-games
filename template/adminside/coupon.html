@@ -1,0 +1,58 @@
+{% extends 'adminside/adminbase.html' %}
+{% load static %}
+
+{% block title %}
+Coupon
+{% endblock %}
+
+{% block couponclass %}
+text-white
+{% endblock %}
+
+{% block tablecontent %}
+Categories
+{% endblock %}
+
+{% block maincontent %}
+
+
+<a class="btn btn-primary text-white btn-lg mb-2" href="{% url 'addcoupon' %}" role="button">Add New Coupon</a>
+{% for message in messages %}
+<div class="alert alert-secondary admin-alert-messages">
+  {{message}}
+</div>
+{% endfor %}
+
+
+<table class="table " id="table_id">
+    <thead>
+      <tr class="table-dark text-center ">
+        <th>Sl.No</th>
+        <td>Code</td>
+        <td>Offer Value</td>
+        <td>Valid from</td>
+        <td>Valid to</td>
+        <td>Status</td>
+      </tr>
+    </thead>
+    <tbody>
+        {% for obj in coupon %}
+        <tr class="text-center align-middle text-white">
+            <td>{{forloop.counter}}</td>
+            <td>{{obj.code}}</td>
+            <td>{{obj.offer_value}}%</td>
+            <td>{{obj.valid_from}}</td>
+            <td>{{obj.valid_to}}</td>
+            <td>
+                {% if obj.active == True %}
+                Valid
+                {% else %}
+                Invalid
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

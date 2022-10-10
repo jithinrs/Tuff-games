@@ -1,0 +1,103 @@
+{% extends 'adminside/adminbase.html' %}
+{% load static %}
+
+{% block title %}
+Category
+{% endblock %}
+
+{% block productclass %}
+text-white
+{% endblock %}
+
+{% block tablecontent %}
+Products
+{% endblock %}
+
+{% block maincontent %}
+<div class="card-body">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group mb-3">
+            <label>{{ field.label }}</label>
+            {% if field.field.widget.input_type != "select" and field.field.widget.input_type != "checkbox" %}
+            <input type="{{ field.field.widget.input_type }}" name={{ field.name }} id="{{ field.name }}"
+                class="form-control text-white">
+
+
+            {% elif field.field.widget.input_type == "select" %}
+            <select name={{ field.name }} id="{{ field.name }}" class="form-control text-white">
+                {% for id,value in field.field.choices %}
+                <option value="{{ id }}">{{ value }}</option>
+                {% endfor %}
+            </select>
+            {% else %}
+            <input type="{{ field.field.widget.input_type }}" name={{ field.name }} id="{{ field.name }}" class="">
+            {% endif %}
+            {% if field.errors %}
+            <div class="alert alert-danger" style="margin:10px">
+                {{ field.errors }}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-dark btn-block text-white">SAVE Product</button>
+    </form>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+    integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    jQuery(document).ready(() => {
+
+        // document.getElementById("url_slug").disabled = true
+
+        // var element = document.getElementById("url_slug");
+        // element.classList.add("inputdarkcolor");
+
+        $("#categories_id").change(function() {
+            var catname = this.value
+            console.log(catname);
+        })
+
+
+
+    })
+
+</script>
+<script>
+    document.getElementById("product_name").onkeyup = function () {
+        var x = document.getElementById("product_name").value.toLowerCase().replaceAll(" ", "-");
+        document.getElementById("url_slug").value = x;
+    }
+</script>
+
+<script>
+    
+</script>
+<!-- <script>
+    $(document).ready(function () {
+        document.getElementById("url_slug").disabled = True
+        
+    })
+</script> -->
+
+
+{% endblock %}
+
+
+{% comment %}
+<!-- {% block maincontent %}
+<div class="card-body">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group mb-3">
+            
+
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-dark btn-block text-white">SAVE Product</button>
+    </form>
+</div>
+{% endblock %} --> {% endcomment %}

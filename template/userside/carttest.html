@@ -1,0 +1,222 @@
+{% extends 'userside/userbase.html' %}
+{% load static %}
+
+{% block testing %}
+
+<section class="banner-area organic-breadcrumb mb-5">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1>Cart
+
+                </h1>
+                <nav class="d-flex align-items-center">
+                    <a href="{% url 'home' %}">Home<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="#">Cart</a>
+                    <!-- <a href="category.html">Fashon Category</a> -->
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container" style="height:50px ;">
+    <div id="msg">
+        
+    </div>
+</div>
+
+<div class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 mb-5">
+                <div class="card shadow">
+                    <div class="card-body cartdata">
+                        {% if cart %}
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h4 class="text-center">Item</h4>
+                            </div>
+                            <div class="col-md-2">
+                                <h4 class="text-center">Price</h4>
+                            </div>
+                            <div class="col-md-2">
+                                <h4 class="text-center">Discount</h4>
+                            </div>
+                            <div class="col-md-2">
+                                <h4 class="text-center">Quantity</h4>
+                            </div>
+                            <div class="col-md-2">
+                                <h4 class="text-center">Remove</h4>
+                            </div>
+                        </div>
+                        <hr>
+                        {% for item in cart %}
+                        <div class="row product_data">
+                            <div class="col-md-2 my-auto">
+                                <img src="{{item.product.product_image.url}}" height="70px"
+                                    alt="{{item.product.product_name}}">
+                            </div>
+                            <div class="col-md-2 my-auto">
+                                {{item.product}}
+                            </div>
+                            {% if item.product.disc_details.all %}
+                            <div class="col-md-2 my-auto text-center">
+                                <h6>₹  <del class="text-dark text-center">{{item.product.product_max_price}}</del></h6>
+                            </div>
+                            {% else %}
+                            <div class="col-md-2 my-auto text-center">
+                                <h6 class="text-dark text-center">₹{{item.product.product_max_price}}</h6>
+                            </div>
+                            {% endif %}
+                            <div class="col-md-2 my-auto text-center">
+                                {% for discount in item.product.disc_details.all %}
+                                <h6>₹{{ discount.discountprice }}</h6>
+                                {% endfor %}
+                            </div>
+                            <div class="col-md-2 my-auto ">
+                                {% if item.product.in_stock_total %}
+                                <div class="product_count mt-3 d-flex justify-content-center">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{ item.product.id}}" class="prod_id">
+                                    <!-- <label for="qty">Quantity:</label> -->
+                                    <input type="text" name="qty" id="sst" maxlength="1" value="{{item.product_qty}}"
+                                        title="Quantity:" class="input-text qty qty-input text-center">
+                                    <button class="increase items-count changeQuantity increment-btn" type="button"><i
+                                            class="lnr lnr-chevron-up"></i></button>
+                                    <button class="reduced items-count changeQuantity decrement-btn" type="button"><i
+                                            class="lnr lnr-chevron-down"></i></button>
+                                </div>
+                                {% else %}
+                                <div class="mt-3">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{ item.product.id}}" class="prod_id">
+                                    <h6>Out of stock</h6>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-2 my-auto d-flex justify-content-center">
+                                <button class="genric-btn danger circle mb-2 delete-cart-item">Remove <i
+                                        class="fa fa-trash" aria-hidden="true"></i></button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% if user.is_authenticated %}
+                <a href="{% url 'checkout' %}" class="genric-btn primary circle mt-5">Checkout</a>
+                {% else %}
+                <a href="{% url 'login' %}" class="genric-btn primary circle mt-5">Checkout</a>
+                {% endif %}
+                {% else %}
+                <h4>Your cart is Empty. Go to <a href="{% url 'shop' %}">shop.</a></h4>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}
+
+{% block customscript %}
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+    integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<script>
+    $(document).ready(function () {
+        $('.increment-btn').click(function (e) {
+            e.preventDefault();
+
+            var inc_value = $(this).closest('.product_data').find('.qty-input').val()
+            var value = parseInt(inc_value, 10);
+            value = isNaN(value) ? 0 : value;
+            if (value < 10) {
+                value++;
+                $(this).closest('.product_data').find('.qty-input').val(value)
+            }
+        })
+
+        $('.decrement-btn').click(function (e) {
+            e.preventDefault();
+
+            var dec_value = $(this).closest('.product_data').find('.qty-input').val()
+            var value = parseInt(dec_value, 10);
+            value = isNaN(value) ? 0 : value;
+            if (value > 1) {
+                value--;
+                $(this).closest('.product_data').find('.qty-input').val(value)
+            }
+        })
+
+
+        $('.changeQuantity').click(function (e) {
+            e.preventDefault()
+
+            var product_id = $(this).closest('.product_data').find('.prod_id').val()
+            var product_qty = $(this).closest('.product_data').find('.qty-input').val()
+            var token = $('input[name=csrfmiddlewaretoken]').val()
+            // console.log(product_id);
+
+            $.ajax({
+                method: "POST",
+                url: '/update-cart',
+                data: {
+                    'product_id': product_id,
+                    'product_qty': product_qty,
+                    csrfmiddlewaretoken: token
+                },
+                // success: function (response) {
+                //     console.log(response);
+                //     alertify.success(response.status)
+                // }
+                // success: function (res) {
+                //     $('#success').html('<div class="alert alert-success alert-dismissible" role="alert"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>Row Deleted Successfuly</div>');
+
+                //     setTimeout(function () { window.location.reload(); }, 1000);
+
+                // },
+                success: function (response) {
+                    // $('#msg').html(response).fadeIn('slow');
+                    // $('#msg').empty()
+                    // $('#msg').html(response.Status).fadeIn('fast').addClass('cart-styling') //also show a success message 
+                    // $('#msg').delay(200).fadeOut('slow');
+                }
+            })
+
+        })
+
+
+        $(document).on('click', '.delete-cart-item', function (e) {
+            e.preventDefault();
+
+            var product_id = $(this).closest('.product_data').find('.prod_id').val()
+            var token = $('input[name=csrfmiddlewaretoken]').val()
+            console.log(product_id);
+            $.ajax({
+                method: "POST",
+                url: '/delete-cart-item',
+                data: {
+                    'product_id': product_id,
+                    csrfmiddlewaretoken: token
+                },
+                success: function (response) {
+                    $('#msg').empty()
+                    $('#msg').html(response.Status).fadeIn('fast').addClass('cart-styling').css('background-image', 'linear-gradient(to right, rgb(238, 10, 10), rgb(255, 255, 255)');
+
+                    $('#msg').delay(200).fadeOut('slow');
+                    // $('.cartdata').load(location.href + ' .cartdata')
+                    window.location.reload();
+                }
+
+            })
+
+        })
+    })
+</script>
+{% endblock %}

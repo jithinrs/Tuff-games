@@ -1,0 +1,62 @@
+{% extends 'useraccount/baseaccountt.html' %}
+
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}
+{{request.user.first_name}}
+{% endblock %}
+
+{% block usertitle %}
+Orders
+{% endblock %}
+
+{% block orderactive %}
+active
+{% endblock %}
+
+
+
+
+{% block testing %}
+
+
+<div class="card shadow my-5">
+    <div class="card-body">
+        <h6>Basic Details</h6>
+        <hr>
+        <form method="POST" class="post-form" action="">  
+            {% csrf_token %}
+            <div class="row">
+                
+                
+
+                <div class="col-md-6 mb-2">
+                    <label for="">First Name</label>
+                    <br>
+                    <!-- <input class="form-control" type="text" name="first_name" placeholder="Enter your first name"> -->
+                    {% render_field form.first_name required="True" class="form-control" %}
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label for="">Last Name</label><br>
+                    <!-- <input class="form-control" type="text" name="last_name" placeholder="Enter your last name"> -->
+                    {% render_field form.last_name required="True" %}
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label for="">Mobile</label><br>
+                    <!-- <input class="form-control" type="text" name="mobile" placeholder="Enter your mobile"> -->
+                    {% render_field form.mobile required="True" %}
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label for="">Email</label><br>
+                    <!-- <input class="form-control" type="text" name="email" placeholder="Enter your email"> -->
+                    {% render_field form.email required="True" %}
+                </div>
+                <div >
+                    <button type="submit" class="btn btn-primary">submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

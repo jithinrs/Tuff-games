@@ -1,0 +1,146 @@
+{% extends 'adminside/adminbase.html' %}
+{% load static %}
+
+{% block title %}
+Order
+{% endblock %}
+
+{% block reportclass %}
+text-white
+{% endblock %}
+
+{% block tablecontent %}
+Sales report
+{% endblock %}
+
+{% block maincontent %}
+
+<!-- <div class="row">
+
+    <div class="col-xl-6 col-sm-6 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            
+              <div class="col-12">
+                <div class="d-flex align-items-center">
+                  <h3 class="mb-0">₹{{total_payment_amount.total_price__sum}}</h3>
+                </div>
+              </div>            
+            <h6 class="text-muted font-weight-normal">Monthly sale</h6>
+          </div>
+        </div>
+      </div>
+    <div class="col-xl-6 col-sm-6 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            
+              <div class="col-12">
+                <div class="d-flex align-items-center">
+                  <h3 class="mb-0">₹{{total_payment_amounty.total_price__sum}}</h3>
+                </div>
+              </div>            
+            <h6 class="text-muted font-weight-normal">Yearly sale</h6>
+          </div>
+        </div>
+      </div>
+
+
+</div> -->
+
+<div class="container">
+  <form action="{% url 'salesreport' %}" method="POST">
+    {% csrf_token %}
+    <div class="col-md-2">
+      <label for="" class="h5">Starting Date : </label>
+      <input type="date" id="start_date" name="start_date" required="True" class="form-control text-white">
+    </div>
+    <div class="col-md-2">
+      <label for="" class="h5">Ending Date : </label>
+    <input type="date" id="end_date" name="end_date" required="True" class="form-control text-white">
+    </div>
+    <div class="mb-2"><button class="btn btn-success btn-sm mt-2 ml-3 px-4" type="submit">Filter</button></div>
+  </form>
+</div>
+
+<div class="row">
+    <button style="width:200px ; margin-right: 5px; margin-left: 20px;" class="btn btn-md ml-auto btn-primary ml-auto mb-3" onclick="ExportToExcel('xlsx')">Export To Excel</button>
+    <input style="width: 200px; height: 29px;" type="button" class="btn btn-danger btn-md  ml-auto" id="btnExport" value="Export To PDF" />
+</div>
+<h3>Monthly Report</h3>
+<table class="table table " id="tbl_exporttable_to_xls">
+    <thead>
+        <tr class="">
+          <th class="text-success">
+            Product Name
+          </th>
+          <th class="text-success">
+            Item Sold
+          </th>
+          <th class="text-success">
+            Total Stock
+          </th>
+
+          <th class="text-success">
+            Amounts
+          </th>
+        </tr>
+      </thead>
+      {% for order in orders %}
+            <tbody>
+              <tr class=" text-white">
+                <td>
+                  {{order.oderuser__product_id__product_name}}
+                </td>
+                <td>
+                  {{order.dcount}}
+                </td>
+                <td>
+                    {{order.oderuser__product_id__in_stock_total}}  
+                </td>
+                
+                <td>
+                  {{order.total}}
+                </td>
+              </tr>
+            </tbody>
+            {%endfor%}
+          
+</table>
+
+
+
+<script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+<script>
+  function ExportToExcel(type, fn, dl) {
+       var elt = document.getElementById('tbl_exporttable_to_xls');
+       var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+       return dl ?
+         XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }):
+         XLSX.writeFile(wb, fn || ('MySheetName.' + (type || 'xlsx')));
+    }
+</script>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.22/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+
+
+<!-- script for for pdf creation -->
+<script type="text/javascript">
+  $("body").on("click", "#btnExport", function () {
+      html2canvas($('#tbl_exporttable_to_xls')[0], {
+          onrendered: function (canvas) {
+              var data = canvas.toDataURL();
+              var docDefinition = {
+                  content: [{
+                      image: data,
+                      width: 500
+                  }]
+              };
+              pdfMake.createPdf(docDefinition).download("customer-details.pdf");
+          }
+      });
+  });
+</script>
+
+{% endblock %}

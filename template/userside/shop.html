@@ -1,0 +1,157 @@
+{% extends 'userside/userbase.html' %}
+{% load static %}
+
+{% block testing %}
+
+<section class="banner-area organic-breadcrumb mb-5">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1>Find your products</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="{% url 'home' %}">Home<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="#">Shop</a>
+                    <!-- <a href="category.html">Fashon Category</a> -->
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-xl-3 col-lg-4 col-md-5">
+            <div class="sidebar-categories">
+                <div class="head">Browse Categories</div>
+                <ul class="main-categories">
+                    {% for cat in category %}
+                    <li class="main-nav-list">
+                        <a href="{% url 'shopcat' cat_slug=cat.url_slug %}">{{cat.title}}</a>
+                        
+                    </li>
+                    {% endfor %}
+                    
+                </ul>
+
+
+
+
+            </div>
+        </div>
+        <!-- Filter ends her -->
+        <div class="col-xl-9 col-lg-8 col-md-7">
+            <!-- <div class="filter-bar d-flex flex-wrap align-items-center text-white">
+                <div class="sorting">
+                    <select>
+                        <option value="1">Default sorting</option>
+                        <option value="1">Default sorting</option>
+                        <option value="1">Default sorting</option>
+                    </select>
+                </div>
+                <div class="sorting mr-auto">
+                    <select>
+                        <option value="1">Show 12</option>
+                        <option value="1">Show 12</option>
+                        <option value="1">Show 12</option>
+                    </select>
+                </div>
+               
+               
+            </div> -->
+            <!-- sorting and header ends here -->
+
+
+            <section class="lattest-product-area pb-40 category-list">
+                <div class="row">
+                    <!-- single product -->
+                    {% for pro in pproduct %}
+                    <div class="col-lg-4 col-md-6">
+                        <div class="single-product">
+                            {% comment %} <a href="{% url 'productview' pro.url_slug %}"><img class="img-fluid"
+                                src="{{pro.product_image.url}}" alt=""> </a> {% endcomment %}
+                            <a href="{{pro.get_userside_url}}"><img class="img-fluid shadow"
+                                src="{{pro.product_image.url}}" alt=""> </a>
+                                <div class="product-details">
+                                    <h6>{{pro.product_name}}</h6>
+                                <div class="price">
+                                    <h6>₹{{pro.product_discount_price}}</h6>
+                                    <h6 class="l-through">₹{{pro.product_max_price}}</h6>
+                                </div>
+                                <div class="prd-bottom">
+                                    
+                                    <a href="" class="social-info">
+                                        <span class="ti-bag"></span>
+                                        <p class="hover-text">add to bag</p>
+                                    </a>
+                                    <a href="" class="social-info">
+                                        <span class="lnr lnr-heart"></span>
+                                        <p class="hover-text">Wishlist</p>
+                                    </a>
+                                    <!-- <a href="" class="social-info">
+                                        <span class="lnr lnr-sync"></span>
+                                        <p class="hover-text">compare</p>
+                                    </a>
+                                    <a href="" class="social-info">
+                                        <span class="lnr lnr-move"></span>
+                                        <p class="hover-text">view more</p>
+                                    </a> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    
+                    
+                </div>
+                <!-- pagination -->
+                <div class="d-flex justify-content-center">
+                    <div>
+                        {% if pproduct.has_previous %}
+                        <a class="btn btn-primary" href="?page=1">&laquo First</a>
+                        <a class="btn btn-primary" href="?page={{ pproduct.previous_page_number }}">Previous</a>
+                        {% endif %}
+                        <button class="btn btn-dark disabled">Page {{pproduct.number}} of {{pproduct.paginator.num_pages}}</button>
+                        {% if pproduct.has_next %}
+                        <a class="btn btn-primary" href="?page={{ pproduct.next_page_number }}">Next</a>
+                        <a class="btn btn-primary" href="?page={{pproduct.paginator.num_pages}}">Last &raquo</a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+
+
+            </section>
+
+
+
+        </div>
+
+
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <ul>
+{% for cat in category %}
+    <li>{{cat.title}}</li>
+    <ul>
+        {% for subcategory in cat.subcategories.all %}
+        <li>{{subcategory.title}}</li>
+        {% endfor %}
+    </ul>
+{% endfor %}
+</ul> -->
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'useraccount/baseaccountt.html' %}
+{% load static %}
+
+{% block title %}
+{{request.user.first_name}}
+{% endblock %}
+
+{% block usertitle %}
+Dashboard
+{% endblock %}
+
+{% block dashboardactive %}
+active
+{% endblock %}
+
+
+
+
+
+{% block testing %}
+
+
+<div class="py-5">
+    <div class="container">
+        <div class="mb-5" style="display: flex; justify-content:center ; flex-direction: column; align-items: center;">
+            <!-- <div style="position: relative;">
+                {% if account.profile_image %}
+                <div><img src="{{account.profile_image.url}}" class="rounded-circle shadow mb-3" style="width: 150px;" alt="Avatar" /></div>
+                {% else %}
+                <div><img src="{% static 'temp/img/profile_pic.jpg' %}" class="rounded-circle shadow mb-3" style="width: 150px;" alt="Avatar" /></div>
+                {% endif %}
+                <div style="position: absolute; left:130px ; bottom: 5px;"><a href="{% url 'updateprofile' %}" style="font-size:25px ;" data-toggle="tooltip" data-placement="top" title="Edit details"><i class="fa fa-edit"></i></a></div>
+            </div> -->
+            <h5 class="mb-2" ><strong
+                    style="text-transform:uppercase; ">{{account.first_name}} {{account.last_name}}</strong></h5>
+            <h5 class="mb-2">{{account.mobile}}&nbsp;|&nbsp;{{account.email}} <a href="{% url 'updateprofile' %}" style="font-size:25px ;" data-toggle="tooltip" data-placement="top" title="Edit details"><i class="fa fa-edit"></i></a></h5>
+        </div>
+        <div>
+            <h3>Addresses</h3>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card shadow">
+                    {% for t in addr %}
+                    <div class="row">
+                        <div class="card-body text-dark col-md-8">
+                            <span>Address : {{forloop.counter}}</span> <br>
+                            <span style="font-weight:bold ; font-size:16px ;">{{t.name}} | {{t.mobile}} |
+                                {{t.email}}</span><br>
+                            {{t.address_1}},
+                            {{t.address_2}},
+                            {{t.city}} <br> {{t.district}}
+                            {{t.state}}
+                            {{t.pincode}}
+                        </div>
+                        <div class="col-md-4 d-flex align-items-center justify-content-center">
+                            <a href="{% url 'updateaddress' t.id %}" class="btn btn-dark">Update</a>
+                            <a href="{% url 'deleteaddress' t.id %}" class="btn btn-danger" style="margin-left:10px ;">Delete</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="my-3">
+            <a href="{% url 'useraddaddress' %}" class="btn btn-primary">Add new address</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

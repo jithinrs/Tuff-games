@@ -1,0 +1,163 @@
+{% extends 'useraccount/baseaccountt.html' %}
+{% load static %}
+
+{% block title %}
+{{request.user.first_name}}
+{% endblock %}
+
+{% block usertitle %}
+Orders
+{% endblock %}
+
+{% block orderactive %}
+active
+{% endblock %}
+
+
+
+
+{% block testing %}
+<div class="">
+    <div class="container">
+        <h3>Order History</h3>
+        <div class="row">
+            {% for obj in orderhistory %}
+            <div class="col-md-12 mb-3">
+                <div class="card shadow mb-3">
+                    <div class="card-body">
+                        <div class="row">
+
+
+                            
+                            <div class="col-6">
+                                {% for ord in obj.oderuser.all %}
+                                {% if forloop.counter != 1 %}
+                                <hr>
+                                {% endif %}
+                                <img width="50px" src="{{ord.product_id.product_image.url}} " alt="">
+                                <div class="">
+                                    <span style="font-size:17px ;" class="text-dark">{{ord.product_id}} x
+                                        {{ord.quantity}} </span><br>
+                                    <span style="font-weight: bold;">Brand:&nbsp;</span>{{ord.product_id.brand}}
+                                </div>
+
+                                {% endfor %}
+                            </div>
+
+
+                            
+                            <div class="col-4">
+                                <span style="font-size:16px ;" class="text-dark">Ordered to:</span><br>
+                                {{obj.name}} | {{obj.mobile}} <br>
+                                <span style="font-size:16px ;" class="text-dark">Total price:
+                                    &nbsp;</span ><span style="color:black ; font-weight:500 ; font-size: 22px;">₹{{obj.total_price}}</span> <br>
+                                    
+                                <span style="font-size:16px ;" class="text-dark">Ordered status:</span> 
+                                {% if obj.status == "Order cancelled" or obj.status == "Returned" %}
+                                <span style="color:red ; font-weight: 600; font-size:16px ;" >{{obj.status}}</span>
+                                {% elif obj.status == "Completed" %}
+                                <span style="color:green ; font-weight: 600; font-size:16px ;" >Delivered</span>
+                                    {% else %}
+                                <span style="color:blue ; font-weight: 600; font-size:16px ;" >{{obj.status}}</span>
+                                {% endif %}
+                            </div>
+
+
+
+                            <div class="col-2 d-flex align-items-center">
+                                {% if obj.status == "Order cancelled" or obj.status == "Returned" %}
+                                
+                                {% elif obj.status == "Completed" %}
+                                <button type="button" class="btn btn-danger" data-toggle="modal"
+                                    data-target="#return{{obj.id}}">
+                                    Return
+                                </button>
+                                {% else %}
+                                <button type="button" class="btn btn-warning mb-2" data-toggle="modal"
+                                    data-target="#cancel{{obj.id}}">
+                                    Cancel order
+                                </button>
+                                
+                                {% endif %}
+                            </div>
+
+
+                            <div class="modal fade" id="cancel{{obj.id}}" tabindex="-1"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Do you want to cancel this order?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">Close</button>
+                                            <form method="post" action="{% url 'cancel_order' obj.id %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-primary">Cancel Order</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="modal fade" id="return{{obj.id}}" tabindex="-1"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Do you want to return this order?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">Close</button>
+                                            <form method="post" action="">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-primary">Cancel Order</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% if orderhistory.has_previous %}
+<a class="btn btn-primary" href="?page=1">&laquo First</a>
+<a class="btn btn-primary" href="?page={{ orderhistory.previous_page_number }}">Previous</a>
+
+{% endif %}
+
+<button class="btn btn-dark disabled">Page {{orderhistory.number}} of {{orderhistory.paginator.num_pages}}</button>
+
+
+{% if orderhistory.has_next %}
+<a class="btn btn-primary" href="?page={{ orderhistory.next_page_number }}">Next</a>
+<a class="btn btn-primary" href="?page={{orderhistory.paginator.num_pages}}">Last &raquo</a>
+
+{% endif %}
+
+{% endblock %}

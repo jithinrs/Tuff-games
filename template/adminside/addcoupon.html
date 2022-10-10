@@ -1,0 +1,52 @@
+{% extends 'adminside/adminbase.html' %}
+{% load static %}
+
+{% load widget_tweaks %}
+
+{% block title %}
+Coupon
+{% endblock %}
+
+
+
+{% block tablecontent %}
+Add New Coupon
+{% endblock %}
+
+{% block maincontent %}
+
+<form action="" method="post">
+    {% csrf_token %}
+    <div class = "mb-3 col-md-3">
+        <label for="">Code</label>
+        {% render_field form.code required="True" class="form-control text-white" %}
+
+    </div>
+
+    <div class = "mb-3">
+        <label for="">Valid from</label>
+        <input type="date" name="valid_from" style="width:150px ;" class="form-control text-white">
+    </div>
+
+    <div class = "mb-3">
+        <label for="">valid upto</label>
+        <input type="date" name="valid_to" style="width:150px ;" class="form-control text-white">
+
+    </div>
+
+    <div class = "mb-3 col-md-2">
+        <label for="">Offer value</label>
+        {% render_field form.offer_value required="True" class="form-control text-white" %}
+
+    </div>
+
+    <div class = "mb-3">
+        <label for="">Status</label>
+        {% render_field form.active required="True" %}
+
+    </div>
+
+    <div class = "mb-3 "><button class="btn btn-primary" type="submit">submit</button></div>
+</form>
+
+{% endblock %}

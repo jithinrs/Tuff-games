@@ -1,0 +1,82 @@
+{% extends 'userside/userbase.html' %}
+{% load static %}
+
+{% block testing %}
+
+<section class="banner-area organic-breadcrumb mb-5">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1>Order confirmed
+
+                </h1>
+                <nav class="d-flex align-items-center">
+                    <a href="{% url 'home' %}">Home<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="#">message</a>
+                    <!-- <a href="category.html">Fashon Category</a> -->
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card shadow">
+                   <div class="card-body">
+                            <h3>Shipping Address</h3>
+                            {% for obj in order %}
+                            {{obj.name}} <br>
+                            {{obj.address_1}}
+                            {{obj.address_2}} <br>
+                            {{obj.city}} {{ obj.district}} <br>
+                            {{obj.state}} {{obj.pincode}}
+                            {{obj.total_price}}
+                            {% endfor %}
+                   </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-body text-center">
+                        {% for it in items %}
+                        {{it.product_id.product_name}}
+                        <img width="40px" src="{{it.product_id.product_image.url}}" alt=""> x {{it.quantity}} = {{it.price}} <br>
+                        {% endfor %}
+                        <div class="d-flex justify-content-around mt-3">
+                            <h3>Total:</h3>
+                            <h3>
+                                {% for obj in order %}
+                                {{obj.total_price}}
+                                {% endfor %}
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 mt-5">
+                <div class="card shadow">
+                    <div class="card-body text-center">
+                        <img width="100px" src="{% static 'temp/img/order_confirm.webp' %}" alt="">
+                        <h1>Order confirmed</h1>
+                        <h4>Your item will be delivered soon</h4>
+                        <h3 class="text-danger">Thank you for your purchase!!</h3>
+                        {% for obj in order %}
+                        <h4>Your tracking number is : 
+                                {{obj.tracking_no}}
+                            </h4>
+                            <h4>Mode of  payment : {{obj.payment_mode}}</h4>
+                            {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock %}

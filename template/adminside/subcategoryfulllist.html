@@ -1,0 +1,116 @@
+{% extends 'adminside/adminbase.html' %}
+{% load static %}
+
+{% block title %}
+Category
+{% endblock %}
+
+{% block subcategoryclass %}
+text-white
+{% endblock %}
+
+{% block tablecontent %}
+Subcategories
+{% endblock %}
+
+{% block maincontent %}
+
+<div class="mb-4">
+    <form action="{% url 'subcategoryfulllist' %}" method="get">
+      <input type="text" class="form-control text-white" style="width:250px ; display: inline;" placeholder="search..."
+        name="key">
+      <button style="height:38px ;" class="btn btn-primary" type="submit">Search</button>
+    </form>
+  </div>
+<div class="col py-3">
+    <!-- <div class="row"> -->
+    <a class="btn btn-primary text-white btn-lg mb-2" href="{% url 'subcategoryadd' %}" role="button">Add New
+        Subcategory</a>
+    <!-- <div class="row"> -->
+    {% for message in messages %}
+    <div class="alert alert-success">
+        {{message}}
+    </div>
+    {% endfor %}
+    <table class="table ">
+        <thead>
+            <tr class="table text-center text-white h6">
+                <td>Sl.No</td>
+                <td>Title</td>
+                <td>Status</td>
+                <td>Created</td>
+                <td>img</td>
+                <td>action</td>
+                <td>update</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for object in object_list %}
+            <tr class="text-center align-middle text-white">
+                <td>{{forloop.counter}}</td>
+                <td>{{object.title}}</td>
+                {% if object.is_active == 1 %}
+                <td>Active</td>
+                {% else %}
+                <td>Inactive</td>
+                {% endif %}
+                <td>{{object.created_at}}</td>
+                <td><img src="{{object.thumbnail.url}}" width="100px"></td>
+                <td> <a href="" class="btn btn-danger" id="del-confirm-link" data-bs-toggle="modal"
+                        data-bs-target="#exampleModal{{object.id}}">
+                        Delete
+                    </a>
+                    <div class="modal fade" id="exampleModal{{object.id}}" tabindex="-1"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Delet Category?</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Do you want to delete?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <form action="{% url 'subcategory_delete' object.id %}" method="post"
+                                        id="del-confirm-button">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary">Yes</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <!-- <button type="submit" class="btn btn-dark text-white">Delete</button> -->
+                </td>
+                <td><a href="{% url 'subcategory_update'  object.id%} " class="btn btn-success">update</a></td>
+                </form>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+</div>
+
+
+
+{% if page_obj.has_previous %}
+<a class="btn btn-primary" href="?page=1">&laquo First</a>
+<a class="btn btn-primary" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+
+{% endif %}
+
+<button class="btn btn-dark disabled">Page {{page_obj.number}} of {{page_obj.paginator.num_pages}}</button>
+
+
+{% if page_obj.has_next %}
+<a class="btn btn-primary" href="?page={{ page_obj.next_page_number }}">Next</a>
+<a class="btn btn-primary" href="?page={{page_obj.paginator.num_pages}}">Last &raquo</a>
+
+{% endif %}
+
+{% endblock %}
