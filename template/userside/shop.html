@@ -26,16 +26,17 @@
                 <ul class="main-categories">
                     {% for cat in category %}
                     <li class="main-nav-list">
-                        <a href="{% url 'shopcat' cat_slug=cat.url_slug %}">{{cat.title}}</a>
+                        
+                        <a style="color:red ; font-weight: 500;" href="{% url 'shopcat' cat_slug=cat.url_slug %}">{{cat.title}}
+                            {% for off in cat.catoffer.all %}
+                            <span class="text-primary"><i class="fa fa-hand-o-right" aria-hidden="true"></i> @{{off.offer_perc}}%</span>
+                            {% endfor %}
+                        </a>
                         
                     </li>
                     {% endfor %}
                     
                 </ul>
-
-
-
-
             </div>
         </div>
         <!-- Filter ends her -->

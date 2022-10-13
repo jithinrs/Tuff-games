@@ -80,7 +80,11 @@
                                     {% csrf_token %}
                                     <input type="hidden" value="{{ item.product.id}}" class="prod_id">
                                     <!-- <label for="qty">Quantity:</label> -->
-                                    <input type="text" name="qty" id="sst" maxlength="1" value="{{item.product_qty}}"
+                                    <input type="text" name="qty" id="sst" maxlength="1" 
+                                    {% if item.product.in_stock_total <= 10 %}
+                                    max="{{item.product.in_stock_total}}"
+                                    {% endif %}
+                                    value="{{item.product_qty}}"
                                         title="Quantity:" class="input-text qty qty-input text-center">
                                     <button class="increase items-count changeQuantity increment-btn" type="button"><i
                                             class="lnr lnr-chevron-up"></i></button>

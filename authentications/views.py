@@ -45,7 +45,7 @@ def Register(request):
 
     form=RegistrtationForm()
     # context ={'form':form}
-    return render(request,'signup.html')
+    return render(request,'userside/register.html')
 
 def Login(request):
     if request.user.is_authenticated:
@@ -90,8 +90,10 @@ def Login(request):
                     for item in cart:
                         try:
                             carter = Cart.objects.get(product = item.product, user = user)
-                            carter.product_qty =+ 1
+                            carter.product_qty = item.product_qty + carter.product_qty
+                            carter.user = user
                             carter.save()
+                            item.delete()
                         except:
                             print("naari")
                             item.user = user
@@ -111,7 +113,7 @@ def Login(request):
         else:
             # messages.error(request,'user does not exist..')
             return redirect('login')
-    return render(request,'signin.html')
+    return render(request,'userside/login.html')
 
 
 
@@ -153,8 +155,10 @@ def verify_loginotp(request):
                     for item in cart:
                         try:
                             carter = Cart.objects.get(product = item.product, user = user)
-                            carter.product_qty =+ 1
+                            carter.product_qty = item.product_qty + carter.product_qty
+                            carter.user = user
                             carter.save()
+                            item.delete()
                         except:
                             print("naari")
                             item.user = user

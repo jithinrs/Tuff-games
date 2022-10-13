@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-)x^n81w5+jwpoo2d40k=0-ru$eh2h-@#e%b)45t^&**18lx5wq
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['52.198.55.170']
+ALLOWED_HOSTS = ['*','52.198.55.170']
 
 
 # Application definition
@@ -89,13 +89,13 @@ DATABASES = {
 
         'NAME': 'project',
 
-        'USER': 'jithin',
+        'USER': 'postgres',
 
         'PASSWORD': 'jithinrs',
 
         'HOST': 'localhost',
 
-        'PORT': '',
+        'PORT': '5432',
 
     }
 }
@@ -148,7 +148,7 @@ STATICFILES_DIRS = [
 ]
 
 ACCOUNT_SID='AC88d1b4e0e16cd6bb345b62a6148060bb'
-AUTH_TOKEN='dbc793213f7f2980abfa7023a459c212'
+AUTH_TOKEN='441f209228c7a831f2766766c7743aaa'
 SERVICES_ID='VA4840bc38f8b8963adc0d7ae1519b3443'
 
 # ACCOUNT_SID='ACee8fb23615caf7ea6d7ba1c33294891a'

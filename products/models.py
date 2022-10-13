@@ -220,3 +220,8 @@ class Couponuser(models.Model):
     coupon_modal = models.ForeignKey(Coupon, on_delete = models.CASCADE, null = True, blank = True)
     coupon_code = models.CharField(max_length = 50, null = True, blank = True)
     coupon_value = models.IntegerField(null = True, blank = True)
+
+
+class CategoryOffer(models.Model):
+    category_id = models.ForeignKey(Categories, on_delete = models.CASCADE, null = True, related_name = 'catoffer')
+    offer_perc = models.IntegerField()

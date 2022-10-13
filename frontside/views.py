@@ -3,7 +3,7 @@
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView, ListView, UpdateView, DetailView
 from accountmanage.models import Order, OrderItem
-from products.models import SubCategory, Categories, Product, Cart, discount,wishlist, Coupon, Couponuser
+from products.models import SubCategory, Categories, Product, Cart, discount,wishlist, Coupon, Couponuser, CategoryOffer
 from django.http import JsonResponse
 from django.views.decorators.cache import never_cache
 from accountmanage.models import useraddress, Order, OrderItem
