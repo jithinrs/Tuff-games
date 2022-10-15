@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
 from accountmanage.models import Order,OrderItem, userpic
@@ -6,7 +7,7 @@ from .views import *
 from django.contrib import messages
 from authentications.models import Account
 from authentications.form import userupdateform
-from django.views.generic import CreateView, ListView, UpdateView
+from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from .models import *
 from django.core.paginator import Paginator
 
@@ -39,7 +40,7 @@ def updateprofile(request):
         if form.is_valid():
             form.save()
             messages.success(request,'Updated succesfully')
-            return redirect('useraccount')
+            return redirect('accountmanage:useraccount')
     else:
         form = userupdateform(instance=id)
         context = {
@@ -53,7 +54,7 @@ def addaddress(request):
         if form.is_valid():
             form.save()
             messages.success(request, "update succesful")
-            return  redirect('useraccount')
+            return  redirect('accountmanage:useraccount')
         else:
             print(form.errors.as_data())
             messages.error(request,"you are a FAILURE!!")
@@ -63,18 +64,28 @@ def addaddress(request):
     }
     return render(request, 'useraccount/useraddaddress.html', context)
 
-def updateaddress(request,id):
-    addr = useraddress.objects.get(id=id)
-    form = addressform(instance = addr)
-    print(form)
-    if request.method == 'POST':     
-        form = addressform(request.POSt, instance = addr)
+
+
+
+def update_address(request,id):
+    id=useraddress.objects.get(id = id)
+    if request.method == 'POST':
+        form = AddAddress(request.POST, instance=id)
         if form.is_valid():
             form.save()
-            return redirect('useraccount')
+            messages.error(request , 'Updated Successfully')
+            return redirect('accountmanage:useraccount')
         else:
-            print(form.errors.as_data())
-    return render(request,'useraccount/userupdateaddress.html', {'form' : form})
+            messages.error(request , 'Details is not valid please check it!!')
+            return redirect('accountmanage:useraccount')
+    else:
+        form = AddAddress(instance=id)
+        context = {
+            'form' : form,
+        }
+    return render(request , 'useraccount/userupdateaddress.html' , context)
+
+
 
 
 # def userorderhistory(request):
@@ -113,10 +124,27 @@ def userorderhistory(request):
     return render(request, 'useraccount/userorder.html', context)
 
 
-def deladdress(request, id):
+# def deladdress(request, id):
     
-    address=useraddress.objects.get(id = id)
-    print(address)
+#     address=useraddress.objects.get(id = id)
+#     print(address)
+#     messages.success(request,"Address Deleted")
+#     address.delete()
+#     return redirect('useraccount')
+
+
+# def deletey_address(request, id):
+#     print("poda?")
+#     if request.method == "POST":
+#         address=useraddress.objects.get(pk = id)
+#         messages.success(request,"Address Deleted")
+#         address.delete()
+#         return redirect('useraccount')
+
+def delete_address(request,*args,**kwargs):
+    print("poda?")
+    id=kwargs.get('id')
+    address=useraddress.objects.get(pk = id)
     messages.success(request,"Address Deleted")
     address.delete()
-    return redirect('useraccount')
+    return redirect('accountmanage:useraccount')

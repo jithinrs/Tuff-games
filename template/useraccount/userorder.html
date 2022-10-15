@@ -67,7 +67,7 @@ active
                             <div class="col-2 d-flex align-items-center">
                                 {% if obj.status == "Order cancelled" or obj.status == "Returned" %}
                                 
-                                {% elif obj.status == "Completed" %}
+                                {% elif obj.status == "Out for Delivery" or obj.status == "Completed" %}
                                 <button type="button" class="btn btn-danger" data-toggle="modal"
                                     data-target="#return{{obj.id}}">
                                     Return
@@ -125,9 +125,9 @@ active
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-dismiss="modal">Close</button>
-                                            <form method="post" action="">
+                                            <form method="post" action="{% url 'return_order' obj.id %}">
                                                 {% csrf_token %}
-                                                <button type="submit" class="btn btn-primary">Cancel Order</button>
+                                                <button type="submit" class="btn btn-primary">Return Order</button>
                                             </form>
                                         </div>
                                     </div>

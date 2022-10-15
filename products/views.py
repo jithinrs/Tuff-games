@@ -355,29 +355,38 @@ def sales_report(request):
 
         orders = Order.objects.filter(created_at__year = year,created_at__month=month).values('oderuser__product_id__product_name','oderuser__product_id__in_stock_total',
         total = Sum('total_price'),).annotate(dcount=Sum('oderuser__quantity')).order_by()
-        # total_payment_amount = Order.objects.filter(created_at__month=month).aggregate(Sum('total_price'))
-
+        today_date=str(date.today())
+        year = today.year
+        years = []
+        for i in range (10):
+            val = year-i
+            years.append(val)
     context = {
         'orders':orders,
-        # 'total_payment_amount':total_payment_amount,
-        # 'ordersy' : ordersy,
-        # 'total_payment_amounty' : total_payment_amounty
+        'today_date' : today_date,
+        'years': years
+        
     }
-    return render(request,'adminside/sales-report.html',context)  
+    return render(request,'adminside/salesreport.html',context)  
 
-def yearly_sales_report(request):
-    year = datetime.now().year
-
-    ordersy = Order.objects.filter(created_at__year=year).values('oderuser__product_id__product_name','oderuser__product_id__in_stock_total',
-    total = Sum('total_price'),).annotate(dcount=Sum('oderuser__quantity')).order_by()
-    total_payment_amounty = Order.objects.filter(created_at__year=year).aggregate(Sum('total_price'))
-    
+def monthly_sales_report(request, id):
+    orders = Order.objects.filter(created_at__month = id).values('oderuser__product_id__product_name','oderuser__product_id__in_stock_total',total = Sum('total_price'),).annotate(dcount=Sum('oderuser__quantity')).order_by()
+    print(orders)
+    today_date=str(date.today())
     context = {
-        # 'orders':orders,
-        # 'total_payment_amount':total_payment_amount,
-        'orders' : ordersy,
-        'total_payment_amount' : total_payment_amounty
+        'orders':orders,
+        'today_date':today_date
     }
+    return render(request,'adminside/salesreport.html',context)  
+
+def yearly_sales_report(request, id):
+    orders = Order.objects.filter(created_at__year = id).values('oderuser__product_id__product_name','oderuser__product_id__in_stock_total',total = Sum('total_price'),).annotate(dcount=Sum('oderuser__quantity')).order_by()
+    today_date=str(date.today())
+    context = {
+        'orders':orders,
+        'today_date':today_date
+    }
+
     return render(request,'adminside/sales-report.html',context)  
 
 

@@ -23,7 +23,7 @@ active
     <div class="card-body">
         <h6>Basic Details</h6>
         <hr>
-        <form method="POST" class="post-form" action="{% url 'useraddaddress' %}">  
+        <form method="POST" class="post-form" action="{% url 'accountmanage:useraddaddress' %}">  
             {% csrf_token %}
             <div class="row">
                 

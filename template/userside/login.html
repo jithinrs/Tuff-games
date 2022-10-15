@@ -34,6 +34,15 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
+<style>
+    .testrun{
+        -webkit-transform: scaleX(-1);
+            transform: scaleX(-1);
+            filter: brightness(50%);
+    }
+</style>
+
+
 <body>
 
 
@@ -44,12 +53,11 @@
             <div class="row">
                 <div class="col-lg-6 d-flex align-items-center">
                     <div class="login_box_img">
-                        <img class="img-fluid" src="{% static 'temp/img/conso2.jpg' %}" alt="">
+                        <img class="img-fluid testrun" src="{% static 'temp/img/conso2.jpg' %}" alt="">
                         <div class="hover">
                             <h4>New to our website?</h4>
-                            <p>There are advances being made in science and technology everyday, and a good example of
-                                this is the</p>
-                            <a class="primary-btn" href="registration.html">Create an Account</a>
+                            
+                            <a class="primary-btn" href="/register">Create an Account</a>
                         </div>
                     </div>
                 </div>
@@ -64,7 +72,7 @@
                                     onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email'">
                             </div>
                             <div class="col-md-12 form-group">
-                                <input type="text" class="form-control" id="name" name="password" placeholder="Password"
+                                <input type="password" class="form-control" id="name" name="password" placeholder="Password"
                                     onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'">
                             </div>
                             {% for message in messages %}
@@ -79,9 +87,7 @@
                         <div class="col-md-12 form-group">
                             <p class="text-dark">OR Login with otp <a href="{% url 'otplogin' %}">Click here</a></p>
                         </div>
-                        <div class="col-md-12 form-group">
-                            <p class="text-dark">Don't have an account,<a href="/register">Register here</a></p>
-                        </div>
+                       
                     </div>
                 </div>
             </div>

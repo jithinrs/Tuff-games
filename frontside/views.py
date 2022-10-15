@@ -504,15 +504,19 @@ def cancelorder(request, id):
     if request.method == "POST":
         current_order = Order.objects.get(id = id)
         print("podare")
-        if current_order.status != ("Order cancelled" or "Returned"):
+        if current_order.status != ("Order cancelled" or "Returned" or "Out for Delivery"):
             current_order.status = "Order cancelled"
             print("poda")
             current_order.save()
-    return redirect('userorderhistory')
+    return redirect('accountmanage:userorderhistory')
 
 def returnorder(request,id):
     if request.method == "POST":
         current_order = Order.objects.get(id = id)
+        current_order.status = "Returned"
+        current_order.save()
+    return redirect('accountmanage:userorderhistory')
+    
         
 
 

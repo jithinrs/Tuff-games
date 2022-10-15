@@ -15,37 +15,6 @@ Sales report
 
 {% block maincontent %}
 
-<!-- <div class="row">
-
-    <div class="col-xl-6 col-sm-6 grid-margin stretch-card">
-        <div class="card">
-          <div class="card-body">
-            
-              <div class="col-12">
-                <div class="d-flex align-items-center">
-                  <h3 class="mb-0">₹{{total_payment_amount.total_price__sum}}</h3>
-                </div>
-              </div>            
-            <h6 class="text-muted font-weight-normal">Monthly sale</h6>
-          </div>
-        </div>
-      </div>
-    <div class="col-xl-6 col-sm-6 grid-margin stretch-card">
-        <div class="card">
-          <div class="card-body">
-            
-              <div class="col-12">
-                <div class="d-flex align-items-center">
-                  <h3 class="mb-0">₹{{total_payment_amounty.total_price__sum}}</h3>
-                </div>
-              </div>            
-            <h6 class="text-muted font-weight-normal">Yearly sale</h6>
-          </div>
-        </div>
-      </div>
-
-
-</div> -->
 
 <div class="container">
   <form action="{% url 'salesreport' %}" method="POST">

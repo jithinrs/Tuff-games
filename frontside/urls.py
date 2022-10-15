@@ -24,6 +24,7 @@ urlpatterns = [
     path('ordersuccess', views.successpage, name='ordersuccess'),
     path('add-address', views.checkoutaddaddr, name='checkoutaddaddr'),
     path('cancel_order/<int:id>', views.cancelorder, name='cancel_order'),
+    path('return_order/<int:id>', views.returnorder, name='return_order'),
 
 
     path('testing',views.testing, name='testing'),

@@ -4,7 +4,8 @@ from .import views
 urlpatterns = [
     path('dashboard/', views.adminbase,name='adminbase'),
     path('salesreport', views.sales_report, name='salesreport'),
-    path('yearlyreport', views.yearly_sales_report, name='yearlyreport'),
+    path("sales_report_month/<int:id>",views.monthly_sales_report,name='sales_report_month'),
+    path("sales_report_year/<int:id>",views.yearly_sales_report ,name='sales_report_year'),
     path('categorylist/', views.Categorylist.as_view(), name='categorylist'),
     path('categoryadd/', views.Categoryadd.as_view(), name='categoryadd'),
     path('category_delete/<int:id>/', views.category_delete, name='category_delete'),

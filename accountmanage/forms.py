@@ -45,5 +45,11 @@ class newstatus(forms.ModelForm):
         fields = ['status']
 
 
+class AddAddress(forms.ModelForm):
+    class Meta:
+        model = useraddress
+        fields=['name','mobile','email','address_1','address_2','city','district','state', 'pincode']
+
+
 
     

@@ -1,6 +1,9 @@
 {% extends 'useraccount/baseaccountt.html' %}
 {% load static %}
 
+{% load widget_tweaks %}
+
+
 {% block title %}
 {{request.user.first_name}}
 {% endblock %}
@@ -23,53 +26,57 @@ active
     <div class="card-body">
         <h6>Basic Details</h6>
         <hr>
-        <form method="POST" class="post-form" action="{% url 'useraddaddress' %}">  
+        <form method="POST" class="post-form" action="">  
             {% csrf_token %}
             <div class="row">
                 <div class="col-md-12">
                     <label for="">Name</label>
-                    <input class="form-control" type="text" name="name" placeholder="Enter your name">
+                    {% render_field form.name required="True" class="form-control" %}
                 </div>
-                {% for d in data %}
-                <!-- <div class="col-md-6 mt-2">
-                    <label for="">Email Address</label> -->
-                    <input class="form-control" type="text" name="user_id" hidden  value="{{d.user_id.id}}">
-                <!-- </div> -->
-                {% endfor %}
+                
                 <div class="col-md-6 mt-2">
                     <label for="">Email Address</label>
-                    <input class="form-control" type="email" name="email" placeholder="Enter you email">
+                    <!-- <input class="form-control" type="email" name="email" placeholder="Enter you email"> -->
+                    {% render_field form.email required="True" class="form-control" %}
                 </div>
                 <div class="col-md-6 mt-2">
                     <label for="">Phone Number</label>
-                    <input class="form-control" type="text" name="mobile" placeholder="Enter you phone">
+                    <!-- <input class="form-control" type="text" name="mobile" placeholder="Enter you phone"> -->
+                    {% render_field form.mobile required="True" class="form-control" %}
                 </div>
                 <div class="col-md-12 mt-2">
                     <label for="">Address lane 1</label>
-                    <input class="form-control" type="text" name="address_1" placeholder="Address lane 1">
+                    <!-- <input class="form-control" type="text" name="address_1" placeholder="Address lane 1"> -->
+                    {% render_field form.address_1 required="True" class="form-control" %}
                 </div>
                 <div class="col-md-12 mt-2">
                     <label for="">Address Lane 2</label>
-                    <input class="form-control" type="text" name="address_2" placeholder="Address lane 2">
+                    <!-- <input class="form-control" type="text" name="address_2" placeholder="Address lane 2"> -->
+                    {% render_field form.address_2 required="True" class="form-control" %}
                 </div>
                 <div class="col-md-6 mt-2">
                     <label for="">City</label>
-                    <input class="form-control" type="text" name="city" placeholder="Enter you city">
+                    <!-- <input class="form-control" type="text" name="city" placeholder="Enter you city"> -->
+                    {% render_field form.city required="True" class="form-control" %}
                 </div>
                 <div class="col-md-6 mt-2">
                     <label for="">District</label>
-                    <input class="form-control" type="text" name="district" placeholder="Enter you district">
+                    <!-- <input class="form-control" type="text" name="district" placeholder="Enter you district"> -->
+                    {% render_field form.district required="True" class="form-control" %}
                 </div>
                 <div class="col-md-6 mt-2">
                     <label for="">State</label>
-                    <input class="form-control" type="text" name="state" placeholder="Enter you state">
+                    <!-- <input class="form-control" type="text" name="state" placeholder="Enter you state"> -->
+                    {% render_field form.state required="True" class="form-control" %}
                 </div>
                 <div class="col-md-6 mt-2">
                     <label for="">Pin code</label>
-                    <input class="form-control" type="text" name="pincode" placeholder="Enter you Pin code">
+                    <!-- <input class="form-control" type="text" name="pincode" placeholder="Enter you Pin code"> -->
+                    {% render_field form.pincode required="True" class="form-control" %}
                 </div>
                 <div>
                     <button class="btn btn-primary mt-2" type="submit">Add address</button>
+                    <a class="btn btn-danger mt-2" href="{% url 'accountmanage:useraccount' %}">Cancel</a>
                 </div>
             </div>
         </form>

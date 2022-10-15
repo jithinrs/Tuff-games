@@ -29,11 +29,11 @@ active
                 {% else %}
                 <div><img src="{% static 'temp/img/profile_pic.jpg' %}" class="rounded-circle shadow mb-3" style="width: 150px;" alt="Avatar" /></div>
                 {% endif %}
-                <div style="position: absolute; left:130px ; bottom: 5px;"><a href="{% url 'updateprofile' %}" style="font-size:25px ;" data-toggle="tooltip" data-placement="top" title="Edit details"><i class="fa fa-edit"></i></a></div>
+                <div style="position: absolute; left:130px ; bottom: 5px;"><a href="{% url 'accountmanage:updateprofile' %}" style="font-size:25px ;" data-toggle="tooltip" data-placement="top" title="Edit details"><i class="fa fa-edit"></i></a></div>
             </div> -->
             <h5 class="mb-2" ><strong
                     style="text-transform:uppercase; ">{{account.first_name}} {{account.last_name}}</strong></h5>
-            <h5 class="mb-2">{{account.mobile}}&nbsp;|&nbsp;{{account.email}} <a href="{% url 'updateprofile' %}" style="font-size:25px ;" data-toggle="tooltip" data-placement="top" title="Edit details"><i class="fa fa-edit"></i></a></h5>
+            <h5 class="mb-2">{{account.mobile}}&nbsp;|&nbsp;{{account.email}} <a href="{% url 'accountmanage:updateprofile' %}" style="font-size:25px ;" data-toggle="tooltip" data-placement="top" title="Edit details"><i class="fa fa-edit"></i></a></h5>
         </div>
         <div>
             <h3>Addresses</h3>
@@ -54,8 +54,12 @@ active
                             {{t.pincode}}
                         </div>
                         <div class="col-md-4 d-flex align-items-center justify-content-center">
-                            <a href="{% url 'updateaddress' t.id %}" class="btn btn-dark">Update</a>
-                            <a href="{% url 'deleteaddress' t.id %}" class="btn btn-danger" style="margin-left:10px ;">Delete</a>
+                            <a href="{% url 'accountmanage:updateaddress' t.id %}" class="btn btn-dark">Update</a>
+                            <a href="{% url 'accountmanage:delete_addressss' t.id  %}" class="btn btn-danger" style="margin-left:10px ;">Delete</a>
+                            <!-- <form action="{% url 'accountmanage:delete_addressss' t.id  %}" method="post">
+                                {% csrf_token %}
+                                <button class="btn btn-primary" type="submit">delete</button>
+                            </form> -->
                         </div>
                     </div>
                     {% endfor %}
@@ -63,7 +67,7 @@ active
             </div>
         </div>
         <div class="my-3">
-            <a href="{% url 'useraddaddress' %}" class="btn btn-primary">Add new address</a>
+            <a href="{% url 'accountmanage:useraddaddress' %}" class="btn btn-primary">Add new address</a>
         </div>
     </div>
 </div>

@@ -1,0 +1,36 @@
+<div id="slaes-report-table">
+    <table class="table"  id="tbl_exporttable_to_xls">
+        <thead>
+            <tr class="table-dark text-center text-white">
+                <th>Sl No</th>
+                <th>Product Name</th>
+                <th>Item Sold</th>
+                <th>In stock</th>
+                <th>Amount</th>
+                <!-- <th>Change</th> -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr class="text-center align-middle text-white">
+                <td>{{forloop.counter}}</td>
+                <td>
+                    {{order.oderuser__product_id__product_name}}
+                </td>
+                <td>
+                    {{order.dcount}}
+                </td>
+                <td>
+                    {{order.oderuser__product_id__in_stock_total}}
+                </td>
+    
+                <td>
+                    {{order.total}}
+                </td>
+    
+    
+            </tr>
+        </tbody>
+        {% endfor %}
+    </table>
+</div>
