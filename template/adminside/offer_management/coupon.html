@@ -1,0 +1,85 @@
+{% extends 'adminside/adminbase.html' %}
+{% load static %}
+
+{% block title %}
+Coupon
+{% endblock %}
+
+{% block couponclass %}
+text-white
+{% endblock %}
+
+{% block tablecontent %}
+Categories
+{% endblock %}
+
+{% block maincontent %}
+
+
+<a class="btn btn-primary text-white btn-lg mb-2" href="{% url 'addcoupon' %}" role="button">Add New Coupon</a>
+{% for message in messages %}
+<div class="alert alert-secondary admin-alert-messages">
+  {{message}}
+</div>
+{% endfor %}
+
+
+<table class="table " id="table_id">
+  <thead>
+    <tr class="table-dark text-center ">
+      <th>Sl.No</th>
+      <td>Code</td>
+      <td>Offer Value</td>
+      <td>Valid from</td>
+      <td>Valid to</td>
+      <td>Status</td>
+      <td>Delete</td>
+    </tr>
+  </thead>
+  <tbody>
+    {% for obj in coupon %}
+    <tr class="text-center align-middle text-white">
+      <td>{{forloop.counter}}</td>
+      <td>{{obj.code}}</td>
+      <td>{{obj.offer_value}}%</td>
+      <td>{{obj.valid_from}}</td>
+      <td>{{obj.valid_to}}</td>
+      <td>
+        {% if obj.active == True %}
+        Valid
+        {% else %}
+        Expired
+        {% endif %}
+      </td>
+      <td><a href="" class="btn btn-dark" id="del-confirm-link" data-bs-toggle="modal"
+          data-bs-target="#exampleModal{{obj.id}}">
+          <i class="fa-solid fa-trash text-warning text-center"></i>
+        </a></td>
+
+        <div class="modal fade" id="exampleModal{{obj.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Delet Category?</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Do you want to delete?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <form action="{% url 'deletecoupon' obj.id %}" method="post" id="del-confirm-button">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary">Yes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

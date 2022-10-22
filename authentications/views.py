@@ -40,8 +40,9 @@ def Register(request):
             send_otp(mobile)
             return redirect(verify_code)
         else:
+            print(form.errors.as_data())
             messages.error(request,"Enter correct data")
-            return render(request,'signup.html')
+            return render(request,'userside/register.html')
 
     form=RegistrtationForm()
     # context ={'form':form}

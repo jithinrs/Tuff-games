@@ -2,6 +2,8 @@ from django.urls import path
 from .import views
 
 urlpatterns = [
+    path('', views.admin_login, name="adminlogin"),
+    path('adminlogout', views.adminlogout, name='adminlogout'),
     path('dashboard/', views.adminbase,name='adminbase'),
     path('salesreport', views.sales_report, name='salesreport'),
     path("sales_report_month/<int:id>",views.monthly_sales_report,name='sales_report_month'),
@@ -24,8 +26,19 @@ urlpatterns = [
     path('product_delete/<int:id>/', views.product_delete, name='product_delete'),
     path('orderlist/', views.adminorder, name='orderlist'),
     path('admin_update_order/<int:id>',views.update_admin_order,name="update_admin_order"),
+
+
     path('offer-coupon', views.couponshow, name='couponshow'),
     path('add-coupon', views.addcoupon, name='addcoupon'),
+    path('deletecoupon/<int:id>', views.DeleteCoupon, name='deletecoupon'),
+    path('category-offers', views.category_offers, name='category_offers'),
+    path('category-offers-add', views.add_category_offers, name='add_category_offers'),
+    path('category-offers-delete/<int:id>/', views.category_offers_delete, name="category_offers_delete"),
+    path('product-discount', views.ProductDiscount, name='product_discount'),
+    path('product-discount-delete/<int:id>/', views.DeleteProductDiscount, name='product_discount_delete'),
+    path('Product_discount_add', views.Product_discount_add, name='Product_discount_add'),
+
+
     path("user_display",views.userdisplay,name='user_display'),
 
 

@@ -24,6 +24,7 @@
             <div class="sidebar-categories">
                 <div class="head">Browse Categories</div>
                 <ul class="main-categories">
+                    {% for cat in category %}
                     <li class="main-nav-list">
                         <a data-toggle="collapse" href="#shopcategories{{singlecategory.id}}" aria-expanded="false"
                             aria-controls="shopcategories"><span class="lnr lnr-arrow-right"></span>{{singlecategory.title}}<span
@@ -38,11 +39,7 @@
                             {% endfor %}
                         </ul>
                     </li>
-                    {% for cat in category %}
-                    <li class="main-nav-list">
-                        <a href="{% url 'shopcat' cat_slug=cat.url_slug %}">{{cat.title}}</a>
-
-                    </li>
+                  
                     {% endfor %}
                 </ul>
 

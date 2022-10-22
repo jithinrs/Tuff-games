@@ -2,7 +2,7 @@
 
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView, ListView, UpdateView, DetailView
-from accountmanage.models import Order, OrderItem
+from accountmanage.models import Order, OrderItem, successordermod
 from products.models import SubCategory, Categories, Product, Cart, discount,wishlist, Coupon, Couponuser, CategoryOffer
 from django.http import JsonResponse
 from django.views.decorators.cache import never_cache
@@ -39,8 +39,8 @@ def home(request):
 
 @never_cache
 def shop(request):
-    category = Categories.objects.all()
-    productss = Product.objects.all()
+    category = Categories.objects.filter(is_active = True)
+    productss = Product.objects.filter(is_active = True)
     p = Paginator(Product.objects.all(),9)
     page = request.GET.get('page')
     pproduct = p.get_page(page)
@@ -55,8 +55,8 @@ def shop(request):
 
 
 def shopcat(request,cat_slug):
-    category = Categories.objects.exclude(url_slug = cat_slug)
-    singlecategory = Categories.objects.get(url_slug = cat_slug)
+    category = Categories.objects.filter(is_active = True)
+    # singlecategory = Categories.objects.get(url_slug = cat_slug)
     productss = Product.objects.filter(categories_id__url_slug__contains = cat_slug)
     p = Paginator(productss,3)
     page = request.GET.get('page')
@@ -65,13 +65,13 @@ def shopcat(request,cat_slug):
         'category' : category,
         'productss': productss,
         'pproduct' : pproduct,
-        'singlecategory' : singlecategory
+        # 'singlecategory' : singlecategory
     }
-    return render(request, 'userside/catshop.html', test)
+    return render(request, 'userside/shop.html', test)
 
 def shopsubcat(request,cat_slug, subcat_slug):
-    category = Categories.objects.exclude(url_slug = cat_slug)
-    singlecategory = Categories.objects.get(url_slug = cat_slug)
+    category = Categories.objects.filter(is_active = True)
+    # singlecategory = Categories.objects.get(url_slug = cat_slug)
     productss = Product.objects.filter(categories_id__url_slug__contains = cat_slug, subcategories_id__url_slug__contains = subcat_slug)
     p = Paginator(productss,3)
     page = request.GET.get('page')
@@ -80,9 +80,9 @@ def shopsubcat(request,cat_slug, subcat_slug):
         'category' : category,
         'productss': productss,
         'pproduct' : pproduct,
-        'singlecategory' : singlecategory
+        # 'singlecategory' : singlecategory
     }
-    return render(request, 'userside/subcatshop.html', test)
+    return render(request, 'userside/shop.html', test)
 
 
 
@@ -162,6 +162,8 @@ def AddToCart(request):
 
 def calcprice(qty, price):
     return int(qty) * int(price)
+
+
 
 
 def cart(request):
@@ -287,18 +289,16 @@ def checkout(request):
     rawcart = Cart.objects.filter(user = request.user)
     for item in rawcart:
         if item.product_qty > item.product.in_stock_total:
-            Cart.objects.delete(id = item.id)
+            del_item = Cart.objects.get(id = item.id)
+            del_item.delete()
     
     cartitems = Cart.objects.filter(user = request.user)
     total_price = 0
     disc_prices = 0
     for item in cartitems:
-        try:
-            disc_pr = discount.objects.get(product_id = item.product_id)
-            disc_prices = disc_prices + int(item.product_qty) * int(item.product.product_max_price) * (1 - int(disc_pr.disc_percent)/100)
-        except:
-            disc_prices = disc_prices + int(item.product_qty) * int(item.product.product_max_price)
-        total_price = total_price + int(item.product.product_max_price) * int(item.product_qty)
+        total_price = item.total_price() + total_price
+        disc_prices = item.best_offer() + disc_prices
+    print(total_price)
     
     try:
         coup_value = Couponuser.objects.get(user = request.user)
@@ -313,8 +313,8 @@ def checkout(request):
 
     discount_red = total_price - disc_prices
 
-
-    final_price  = disc_prices - disc_prices * int(coup_perc)/100
+    #  str(round(answer, 2))
+    final_price  = int(disc_prices - disc_prices * int(coup_perc)/100)
     coup_red = disc_prices - final_price
 
     context = {
@@ -326,7 +326,8 @@ def checkout(request):
         'final_price' : final_price,
         'coupon_status' : coupon_status,
         'coup_red' : coup_red,
-        'coupon_codes' : coupon_codes
+        'coupon_codes' : coupon_codes,
+        'coup_perc' : coup_perc
     }
     
     return render(request,'userside/checkout.html', context )
@@ -365,12 +366,9 @@ def placeorder(request):
             total_price = 0
             disc_prices = 0
             for item in cartitems:
-                try:
-                    disc_pr = discount.objects.get(product_id = item.product_id)
-                    disc_prices = disc_prices + int(item.product_qty) * int(item.product.product_max_price) * (1 - int(disc_pr.disc_percent)/100)
-                except:
-                    disc_prices = disc_prices + int(item.product_qty) * int(item.product.product_max_price)
-                    total_price = total_price + int(item.product.product_max_price) * int(item.product_qty)
+                for item in cartitems:
+                    total_price = item.total_price() + total_price
+                    disc_prices = item.best_offer() + disc_prices
             
             try:
                 coup_value = Couponuser.objects.get(user = request.user)
@@ -384,7 +382,7 @@ def placeorder(request):
                 coup_perc = 0
 
             discount_red = total_price - disc_prices
-            final_price  = disc_prices - disc_prices * int(coup_perc)/100
+            final_price  = int(disc_prices - disc_prices * int(coup_perc)/100)
             coup_red = disc_prices - final_price
             neworder.total_price = final_price
             neworder.save()
@@ -412,7 +410,9 @@ def placeorder(request):
                 orderproduct.in_stock_total = orderproduct.in_stock_total - item.product_qty
                 orderproduct.save()
 
-
+            successordermod.objects.create(
+                order_id = neworder.tracking_no
+            )
             Cart.objects.filter(user = request.user).delete()
             Couponuser.objects.filter(user = request.user).delete()
             messages.success(request,'test work')
@@ -420,15 +420,58 @@ def placeorder(request):
             paymode = request.POST.get('payment_mode')
             if paymode == "Paid by Razerpay":
                 print("hello")
-                return JsonResponse({"status" : "jtest work"})
+                return JsonResponse({"status" : "jtest work" , "trackno" : tracking_no})
             if paymode == "Paid by PayPal":
                 print("hello")
-                return JsonResponse({"status" : "paypal test work"})
+                return JsonResponse({"status" : "paypal test work", "trackno" : tracking_no})
+            if paymode == "COD":
+                print("work ayennu thonunnu")
+                return JsonResponse({"status" : "cod test work", "trackno" : tracking_no})
             return redirect('ordersuccess')
         else:
             print(form.errors.as_data())
     messages.success(request,'test didnot  works')
     return redirect('shop')
+
+
+
+def success_order(request):
+    order_number = request.GET.get('order_number')
+    test =  successordermod.objects.get(order_id = order_number,)
+    print(test)
+    # transID = request.GET.get('payment_id')
+    print("ivide ethiyo")
+    try:
+        test =  successordermod.objects.get(order_id = order_number, status = False)
+        test.status = True
+        test.save()
+        order = Order.objects.get(tracking_no = order_number)
+        items = OrderItem.objects.filter(order_id = order.id)
+        print("what happended")
+        context = {
+            # "status" : order_number
+            'obj' : order,
+            'items' : items
+        }
+        return render(request, 'userside/ordersuccess.html', context)
+    except Exception as e: 
+        print(e)
+        return redirect('home') 
+
+def successpage(request):
+    order = Order.objects.filter(user_id = request.user).order_by('-created_at')[:1]
+    ordert = Order.objects.filter(user_id = request.user).last()
+    items = OrderItem.objects.filter(order_id = ordert.id)
+    print(order)
+    context = {
+        'order' : order,
+        'items' : items
+    }
+    return render(request, 'userside/ordersuccess.html', context)
+    
+
+
+
 
 
 def testsubmit(request):
@@ -469,16 +512,6 @@ def razorpay(request):
     })
 
 
-def successpage(request):
-    order = Order.objects.filter(user_id = request.user).order_by('-created_at')[:1]
-    ordert = Order.objects.filter(user_id = request.user).last()
-    items = OrderItem.objects.filter(order_id = ordert.id)
-    print(order)
-    context = {
-        'order' : order,
-        'items' : items
-    }
-    return render(request, 'userside/ordersuccess.html', context)
 
 
 

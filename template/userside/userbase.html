@@ -11,7 +11,7 @@
 	<meta name="keywords" content="">
 	<meta charset="UTF-8">
 	<title>
-        {% block title %}
+       Tuff Games | {% block title %}
         {% endblock %}
     </title>
 	<!--
@@ -59,9 +59,9 @@
 									<li class="nav-item"><a class="nav-link" href="confirmation.html">Confirmation</a></li>
 								</ul>
 							</li> -->
-							{% if user.is_admin %}
+							<!-- {% if user.is_admin %}
 							<li class="nav-item"><a class="nav-link" href="/admint/dashboard">Admin</a></li>
-							{% endif %}
+							{% endif %} -->
 							<li class="nav-item"><a class="nav-link" href="{% url 'shop' %}">Shop</a></li>
 							<!-- <li class="nav-item"><a class="nav-link" href="{% url 'cart' %}">Cart</a></li> -->
 							<!-- <li class="nav-item submenu dropdown">

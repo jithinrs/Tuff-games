@@ -1,0 +1,105 @@
+{% extends 'adminside/adminbase.html' %}
+{% load static %}
+
+{% block title %}
+Coupon
+{% endblock %}
+
+
+
+{% block tablecontent %}
+Category Offers
+{% endblock %}
+
+{% block maincontent %}
+
+
+{% for message in messages %}
+<div class="alert alert-secondary admin-alert-messages">
+  {{message}}
+</div>
+{% endfor %}
+<table class="table">
+    <thead>
+        <tr class="table-dark text-center">
+            <th>Sl no</th>
+            <th>Category</th>
+            <th>Offer value</th>
+            <th>Add offer</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in disc_category %}
+        <tr class="text-center align-middle text-white">
+            <td>{{forloop.counter}}</td>
+            <td>{{item.title}}</td>
+            <td>{{item.category_offer}}</td>
+            
+            <td><a href="" class="btn btn-primary" id="del-confirm-link" data-bs-toggle="modal"
+                    data-bs-target="#add{{item.id}}">
+                    Add
+                </a></td>
+            <td><a href="" class="btn btn-danger" id="del-confirm-link" data-bs-toggle="modal"
+                    data-bs-target="#exampleModal{{item.id}}">
+                    Delete
+                </a></td>
+
+            <div class="modal fade" id="add{{item.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Delet Category?</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+
+                            <form action="{% url 'add_category_offers' %}" method="post" id="del-confirm-button">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="exampleInputUsername1">Category  Name</label>
+                                    <input type="text" class="form-control text-white bg-dark" id="exampleInputUsername1" name="category_name" value="{{item.title}}" readonly>
+                                  </div>
+                                  <div class="form-group">
+                                    <label for="exampleInputUsername1">Offer In % :</label>
+                                    <input type="number" class="form-control text-white" id="exampleInputUsername1" name="category_offer" min="0" max="70" required="True">
+                                  </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Yes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="modal fade" id="exampleModal{{item.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Delet Category?</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Do you want to delete?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <form action="{% url 'category_offers_delete' item.id %}" method="post" id="del-confirm-button">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary">Yes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+</table>
+{% endblock %}

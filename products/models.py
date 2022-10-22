@@ -1,5 +1,6 @@
 from email import message
 from email.policy import default
+from unicodedata import category
 from xml.dom import ValidationErr
 from django.db import models
 from django.urls import reverse
@@ -22,6 +23,7 @@ class Categories(models.Model):
     id =  models.AutoField(primary_key=True, unique=True)
     title = models.CharField(max_length=255, unique=True)
     url_slug = models.SlugField(max_length=255, unique=True)
+    category_offer =models.IntegerField(default = 0, null = True, blank = True ,validators = [MinValueValidator(0), MaxValueValidator(50)])
     thumbnail = models.FileField()
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -95,8 +97,8 @@ class Product(models.Model):
     product_name = models.CharField(max_length=255)
     url_slug = models.SlugField(max_length=255, unique=True)
     brand = models.CharField(max_length=255)
+    product_offer = models.IntegerField(null = True, blank = True , default = 0, validators = [MinValueValidator(0), MaxValueValidator(50)])
     product_max_price = models.CharField(max_length=255)
-    product_discount_price = models.CharField(max_length=255)
     product_image = models.FileField()
     product_image_1 = models.FileField(default='')
     product_image_2 = models.FileField(default='')
@@ -125,6 +127,9 @@ class Product(models.Model):
     def get_suburl(self):
         return reverse('shopcat', args=[self.categories_id.url_slug, self.subcategories_id.url_slug])
     
+    def discountprice(self):
+        return int(self.product_max_price) * (1 - int(self.product_offer)/100)
+    
 
 # class Cartmodel(models.Model):
 #     id = models.AutoField(primary_key=True)
@@ -146,7 +151,42 @@ class Cart(models.Model):
             return "guest's cart - " + self.product.product_name
     
     def total_price(self):
-        return int(self.product_qty * self.product.product_max_price)
+        return int(self.product_qty * int(self.product.product_max_price))
+
+    def total_discount_price(self):
+        discount_value = int(self.product.product_max_price) * (1 - int(self.product.product_offer)/100)
+        return int(self.product_qty * discount_value)
+    
+    def whichoffer(self):
+        product_offers = int(self.product.product_offer)
+        category_offers = int(self.product.categories_id.category_offer)
+
+        if product_offers > 0 or category_offers > 0:
+            return 1
+        else:
+            return 0
+        
+    
+    def best_offer(self):
+
+        product_offers = int(self.product.product_offer)
+        category_offers = int(self.product.categories_id.category_offer)
+        if product_offers > 0 or category_offers > 0 :
+
+            if product_offers > category_offers:
+                discount_price = int(self.product.product_max_price) * (1 - int(product_offers)/100)
+                return int(self.product_qty * discount_price)
+            else:
+                discount_price = int(self.product.product_max_price) * (1 - int(category_offers)/100)
+                return int(self.product_qty * discount_price)
+        
+        else:
+            return int(self.product_qty * int(self.product.product_max_price))
+
+
+
+
+
 
 
     
@@ -208,9 +248,12 @@ class Coupon(models.Model):
     valid_from = models.DateField()
     valid_to = models.DateField()
 
-    offer_value = models.IntegerField(validators = [MinValueValidator(0), MaxValueValidator(100)])
+    offer_value = models.IntegerField(validators = [MinValueValidator(0), MaxValueValidator(70)])
 
     active = models.BooleanField()
+
+    def get_absolute_url(self): 
+        return reverse('couponshow')
 
     def __str__(self):
         return self.code

@@ -1,3 +1,4 @@
+from unicodedata import name
 from django.urls import path
 from .import views
 
@@ -6,10 +7,10 @@ urlpatterns = [
     path('shop/', views.shop, name='shop'),
     # path('shop/subcat/<int:id>', views.shopcat, name='shopcat'),
     path('shop/<slug:cat_slug>/', views.shopcat, name='shopcat'),
-    path('shop/<slug:cat_slug>/<slug:subcat_slug>', views.shopsubcat, name='shopsubcat'),
+    path('shop/<slug:cat_slug>/<slug:subcat_slug>/', views.shopsubcat, name='shopsubcat'),
     path('addtocart/<int:id>', views.AddToCart, name='addtocart'),
     # path('<slug:url_slug>/', views.SingleProView, name='productview'),
-    path('<slug:cat_slug>/<slug:subcat_slug>/<slug:pro_slug>', views.SingleProView, name='productview'),
+    path('shop/<slug:cat_slug>/<slug:subcat_slug>/<slug:pro_slug>/', views.SingleProView, name='productview'),
 
     path('cart/',views.cart,name='cart'),
     path('add-to-cart',views.AddToCart,name='addtocart'),
@@ -21,10 +22,11 @@ urlpatterns = [
     path('wishlist', views.wish_list, name='wish_list'),
     path('place-order', views.placeorder, name='placeorder'),
     path('proceed-to-pay', views.razorpay, name = 'razorpaycheck'),
-    path('ordersuccess', views.successpage, name='ordersuccess'),
+    path('ordersuccess/', views.success_order, name='ordersuccess'),
     path('add-address', views.checkoutaddaddr, name='checkoutaddaddr'),
     path('cancel_order/<int:id>', views.cancelorder, name='cancel_order'),
     path('return_order/<int:id>', views.returnorder, name='return_order'),
+    # path('success-order', views.success_order, name='success_order'),
 
 
     path('testing',views.testing, name='testing'),

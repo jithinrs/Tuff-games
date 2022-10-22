@@ -22,7 +22,7 @@
 
 <div class="container" style="height:50px ;">
     <div id="msg">
-        
+
     </div>
 </div>
 
@@ -37,11 +37,13 @@
                             <div class="col-md-4">
                                 <h4 class="text-center">Item</h4>
                             </div>
-                            <div class="col-md-2">
-                                <h4 class="text-center">Price</h4>
-                            </div>
-                            <div class="col-md-2">
-                                <h4 class="text-center">Discount</h4>
+                            <div class="col-md-4 row">
+                                <div class="col-md-6">
+                                    <h4 class="text-center">Price</h4>
+                                </div>
+                                <div class="col-md-6">
+                                    <h4 class="text-center">Total</h4>
+                                </div>
                             </div>
                             <div class="col-md-2">
                                 <h4 class="text-center">Quantity</h4>
@@ -58,34 +60,47 @@
                                     alt="{{item.product.product_name}}">
                             </div>
                             <div class="col-md-2 my-auto">
-                                {{item.product}}
+                                {{item.product.product_name}}
                             </div>
-                            {% if item.product.disc_details.all %}
-                            <div class="col-md-2 my-auto text-center">
-                                <h6>₹  <del class="text-dark text-center">{{item.product.product_max_price}}</del></h6>
+                            {% if item.product.product_offer > 0 %}
+                            <div class="col-md-4  row ">
+                                <div class="col-md-12 row">
+                                    <div class="col-md-6 my-auto text-center ">
+                                        <h6>₹ <del class="text-dark text-center">{{item.product.product_max_price}}
+                                            </del> <br>{{ item.product.discountprice }}</h6>
+                                    </div>
+                                    <div class="col-md-6 my-auto text-center ">
+
+                                        <h6>₹{{ item.product.discountprice }}</h6>
+
+                                    </div>
+                                </div>
                             </div>
                             {% else %}
-                            <div class="col-md-2 my-auto text-center">
-                                <h6 class="text-dark text-center">₹{{item.product.product_max_price}}</h6>
+                            <div class="col-md-4  row">
+                                <div class="col-md-12 row">
+                                <div class="col-md-6 my-auto text-center">
+                                    <h6 class="text-dark text-center">₹{{item.product.product_max_price}}</h6>
+                                </div>
+                                <div class="col-md-6 my-auto text-center ">
+
+                                    <!-- <h6>₹{{ item.total_price }}</h6> -->
+
+                                </div>
+                                </div>
                             </div>
                             {% endif %}
-                            <div class="col-md-2 my-auto text-center">
-                                {% for discount in item.product.disc_details.all %}
-                                <h6>₹{{ discount.discountprice }}</h6>
-                                {% endfor %}
-                            </div>
+
                             <div class="col-md-2 my-auto ">
                                 {% if item.product.in_stock_total %}
                                 <div class="product_count mt-3 d-flex justify-content-center">
                                     {% csrf_token %}
                                     <input type="hidden" value="{{ item.product.id}}" class="prod_id">
                                     <!-- <label for="qty">Quantity:</label> -->
-                                    <input type="text" name="qty" id="sst" maxlength="1" 
-                                    {% if item.product.in_stock_total <= 10 %}
-                                    max="{{item.product.in_stock_total}}"
-                                    {% endif %}
-                                    value="{{item.product_qty}}"
-                                        title="Quantity:" class="input-text qty qty-input text-center">
+                                    <input type="text" name="qty" id="sst" maxlength="1" {% if
+                                        item.product.in_stock_total <=10 %} max="{{item.product.in_stock_total}}" {%
+                                        endif %} value="{{item.product_qty}}" title="Quantity:"
+                                        class="input-text qty qty-input text-center">
                                     <button class="increase items-count changeQuantity increment-btn" type="button"><i
                                             class="lnr lnr-chevron-up"></i></button>
                                     <button class="reduced items-count changeQuantity decrement-btn" type="button"><i
@@ -108,7 +123,10 @@
                     </div>
                 </div>
                 {% if user.is_authenticated %}
-                <a href="{% url 'checkout' %}" class="genric-btn primary circle mt-5">Checkout</a>
+                <div class="d-flex justify-content-end">
+                    
+                    <a href="{% url 'checkout' %}" class="genric-btn primary circle mt-5">Checkout</a>
+                </div>
                 {% else %}
                 <a href="{% url 'login' %}" class="genric-btn primary circle mt-5">Checkout</a>
                 {% endif %}
@@ -190,6 +208,8 @@
                     // $('#msg').empty()
                     // $('#msg').html(response.Status).fadeIn('fast').addClass('cart-styling') //also show a success message 
                     // $('#msg').delay(200).fadeOut('slow');
+                    // $('#total_price').empty();
+                    // $('.test').load(location.href + ' .total_price > *')
                 }
             })
 

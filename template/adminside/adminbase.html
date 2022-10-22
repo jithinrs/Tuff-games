@@ -14,11 +14,13 @@
     {% block scctesting1 %}
     {% endblock %}
     <!-- Custom css -->
+
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <!-- plugins:css -->
     <link rel="stylesheet" href="{% static 'admin/vendors/mdi/css/materialdesignicons.min.css' %}">
     <link rel="stylesheet" href="{% static 'admin/vendors/css/vendor.bundle.base.css' %}">
     <!-- endinject -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Plugin css for this page -->
     <link rel="stylesheet" href="{% static 'admin/vendors/jvectormap/jquery-jvectormap.css' %}">
     <link rel="stylesheet" href="{% static 'admin/vendors/flag-icon-css/css/flag-icon.min.css' %}">
@@ -37,8 +39,8 @@
     <div class="container-scroller">
         <nav class="sidebar sidebar-offcanvas" id="sidebar">
             <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
-                <a class="sidebar-brand brand-logo" href="{% url 'adminbase' %}"><img width="200px" src="{% static 'blogo.jpg' %}"
-                        alt="logo" /></a>
+                <a class="sidebar-brand brand-logo" href="{% url 'adminbase' %}"><img width="200px"
+                        src="{% static 'blogo.jpg' %}" alt="logo" /></a>
                 <a class="sidebar-brand brand-logo-mini" href="{% url 'adminbase' %}"><img
                         src="{% static 'admin/images/logo-mini.svg' %}" alt="logo" /></a>
             </div>
@@ -115,14 +117,7 @@
                         <span class="menu-title {% block reportclass %} {% endblock %}">Sales Report</span>
                     </a>
                 </li> -->
-                <li class="nav-item menu-items">
-                    <a class="nav-link" href="{% url 'couponshow' %}">
-                        <span class="menu-icon">
-                            <i class="mdi mdi-speedometer"></i>
-                        </span>
-                        <span class="menu-title {% block couponclass %} {% endblock %}">Coupon</span>
-                    </a>
-                </li>
+                
 
                 <li class="nav-item menu-items">
                     <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false"
@@ -130,17 +125,28 @@
                         <span class="menu-icon">
                             <i class="mdi mdi-laptop"></i>
                         </span>
-                        <span class="menu-title">Sales Report</span>
+                        <span class="menu-title">Offers & Coupon</span>
                         <i class="menu-arrow"></i>
                     </a>
                     <div class="collapse" id="ui-basic">
                         <ul class="nav flex-column sub-menu">
-                            <li class="nav-item"> <a class="nav-link" href="{% url 'salesreport' %}">Montly</a></li>
-                        
-                            
+                            <li class="nav-item"> <a class="nav-link" href="{% url 'couponshow' %}">Coupons</a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{% url 'category_offers' %}">Category Offers</a></li>
+                            <li class="nav-item"> <a class="nav-link" href="{% url 'product_discount' %}">Product DIscount</a></li>
                         </ul>
                     </div>
-                </li> 
+                </li>
+
+                <li class="nav-item menu-items">
+                    <a class="nav-link" href="{% url 'salesreport' %}">
+                        <span class="menu-icon">
+                            <i class="mdi mdi-speedometer"></i>
+                        </span>
+                        <span class="menu-title">Sales report</span>
+                    </a>
+                </li>
+
+              
                 <!-- <li class="nav-item menu-items">
                     <a class="nav-link" href="{% url 'home' %}">
                         <span class="menu-icon">
@@ -180,7 +186,11 @@
                                         </div>
                                     </div>
                                     <div class="preview-item-content">
-                                        <p class="preview-subject mb-1">Log out</p>
+                                        <!-- <p class="preview-subject mb-1">Log out</p> -->
+                                        <form action="{% url 'adminlogout' %}" method="post">
+                                            {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary">Log out</button>
+                                        </form>
                                     </div>
                                 </a>
                             </div>
@@ -239,11 +249,13 @@
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+        integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
-        jQuery(document).ready(()=>{
-            
-    
+        jQuery(document).ready(() => {
+
+
             $("#is_active").removeClass("form-control")
         })
     </script>

@@ -27,14 +27,14 @@
                 <div class="card shadow">
                    <div class="card-body">
                             <h3>Shipping Address</h3>
-                            {% for obj in order %}
+                            
                             {{obj.name}} <br>
                             {{obj.address_1}}
                             {{obj.address_2}} <br>
                             {{obj.city}} {{ obj.district}} <br>
                             {{obj.state}} {{obj.pincode}}
                             {{obj.total_price}}
-                            {% endfor %}
+                            
                    </div>
                 </div>
             </div>

@@ -55,7 +55,7 @@
                 <div class="col-lg-6">
                     <div class="login_form_inner">
                         <h3>Register new account</h3>
-                        <form class="row login_form" action="{% url 'login' %}" method="post" id="contactForm"
+                        <form class="row login_form" action="/register/" method="post" id="contactForm"
                             novalidate="novalidate">
                             {% csrf_token %}
                             <div class="col-md-6 form-group">
@@ -94,7 +94,7 @@
                             </div>
                             {% endfor %}
                             <div class="col-md-12 form-group">
-                                <button type="submit" value="submit" class="primary-btn">Log In</button>
+                                <button type="submit" value="submit" class="primary-btn">Sign Up</button>
                             </div>
                         </form>
                     </div>

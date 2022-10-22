@@ -1,0 +1,35 @@
+{% extends 'adminside/adminbase.html' %}
+{% load static %}
+
+{% load widget_tweaks %}
+
+{% block title %}
+Coupon
+{% endblock %}
+
+
+
+{% block tablecontent %}
+Add New Product Discount
+{% endblock %}
+
+{% block maincontent %}
+
+<form action="" method="post">
+    {% csrf_token %}
+    <div class="col-md-3 mb-3">
+        <label for="">Product</label>
+        
+            {% render_field form.product_id class="form-control text-white" %}
+        
+    </div>
+    <div class="col-md-3 mb-3">
+        <label for="">Discount value</label>
+        {% render_field form.disc_percent class="form-control text-white" %}
+    </div>
+
+
+    <div class="mb-3 "><button class="btn btn-primary" type="submit">submit</button></div>
+</form>
+
+{% endblock %}

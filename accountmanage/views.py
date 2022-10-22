@@ -117,11 +117,25 @@ def userorderhistory(request):
     page = request.GET.get('page')
     orderhistory = p.get_page(page)
 
+    
+
+
     context = {
         'orderhistory' : orderhistory,
         'orderhistorys' : orderhistorys
     }
     return render(request, 'useraccount/userorder.html', context)
+
+def user_order_details(request, track):
+    try:
+        order = Order.objects.get(tracking_no = track)
+        context = {
+            'order' : order
+        }
+
+        return render(request, 'useraccount/orderdetails.html',context)
+    except:
+        return redirect('accountmanage:useraccount')
 
 
 # def deladdress(request, id):

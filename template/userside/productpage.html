@@ -73,18 +73,18 @@ TUFF Games | {{pro.product_name}}
             <div class="col-lg-5 offset-lg-1 mt-5">
                 <div class=" each-product s_product_">
                     <h3>{{pro.product_name}}</h3>
-                    {% if pro.disc_details.all %}
+                    
 
 
-                    {% for discount in pro.disc_details.all %}
-                    {% if discount.disc_percent > 0 %}
+                    
+                    {% if pro.product_offer > 0 %}
                     <h2> <del style="color: black;">₹{{pro.product_max_price}} </del>
                         <span style="color: orange ;">
-                            ₹{{ discount.discountprice }}
+                            ₹{{ pro.discountprice }}
                         </span>
                     </h2>
-                    {% endif %}
-                    {% endfor %}
+                    
+                    
                     {% else %}
                     <h2 style="color: black;"> ₹{{pro.product_max_price}}</h2>
                     <!-- <h2> <del style="color: black;">₹{{pro.product_max_price}} </del> </h2> -->

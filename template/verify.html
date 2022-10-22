@@ -27,7 +27,7 @@
                                 <form action="" method="post">
                                     {% csrf_token %}
                                     <div class="form-outline form-white mb-4">
-                                        <input type="text" name="otp" class="form-control form-control-lg signin-placeh"
+                                        <input type="text" name="otp" required class="form-control form-control-lg signin-placeh"
                                             placeholder="OTP" />
                                     </div>
                                     {% for message in messages %}

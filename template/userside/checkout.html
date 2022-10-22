@@ -1,6 +1,8 @@
 {% extends 'userside/userbase.html' %}
 {% load static %}
-
+{% block title %}
+Checkout
+{% endblock %}
 {% block testing %}
 
 <section class="banner-area organic-breadcrumb mb-5">
@@ -81,17 +83,17 @@
                     {% if coupon_status == True %}
                     <div class="container">
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
-                           Code <strong>{{coupon_codes}}</strong> is activated!!
+                            Code <strong>{{coupon_codes}}</strong> is activated!!
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                     </div>
-                    
+
                     {% endif %}
-                    <div class="container mb-2" >
+                    <div class="container mb-2">
                         <div id="msg">
-                        
+
                         </div>
                     </div>
                 </div>
@@ -118,14 +120,15 @@
                                     {{item.product.product_name}}</td>
                                 <td>x{{item.product_qty}}</td>
                                 <td>
-                                    {% if item.product.disc_details.all %}
-                                    <del class="text-dark">₹{{item.product.product_max_price}}</del>
+                                    {% if item.whichoffer == 1 %}
+                                    <del class="text-dark">₹{{item.total_price}}</del>
                                     {% else %}
-                                    ₹{{item.product.product_max_price}}
+                                    ₹{{item.best_offer}}
                                     {% endif %}<br>
-                                    {% for discount in item.product.disc_details.all %}
-                                    ₹{{ discount.discountprice }}
-                                    {% endfor %}
+                                    {% if item.whichoffer == 1 %}
+
+                                    ₹{{ item.best_offer }}
+                                    {% endif %}
 
                                 </td>
                             </tr>
@@ -140,7 +143,7 @@
                     </h6>
                     {% if coupon_status == True %}
                     <h6 class="d-flex justify-content-between container">
-                        <span>Coupon discount:</span><span>-₹{{coup_red}}</span>
+                        <span>Coupon discount({{coup_perc}}%):</span><span>-₹{{coup_red}}</span>
                     </h6>
                     {% endif %}
                     <br>
@@ -148,9 +151,34 @@
                             :</span><span>₹{{final_price}} </span></h5>
                     <input type="hidden" value="COD" name="payment_mode">
                     <div class="d-flex justify-content-center mt-5">
-                        <button style=" font-size: 16px; border-radius:4px ; margin-bottom: 14px; height: 45px "
+                        <!-- <button style=" font-size: 16px; border-radius:4px ; margin-bottom: 14px; height: 45px "
                             type="submit" class="genric-btn btn-primary circle mt-1 container" id="testing232">Cash On
-                            Delivery</button>
+                            Delivery</button> -->
+                        <button style=" font-size: 16px; border-radius:4px ; margin-bottom: 14px; height: 45px " type="button" class="genric-btn btn-primary circle mt-1 container" data-toggle="modal" data-target="#codmod">
+                            Cash on delivery
+                        </button>
+
+                    </div>
+
+                    <div class="modal fade" id="codmod" tabindex="-1" aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Confirm order</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                                    <button type="button" class="btn btn-primary codbutton">Place Order</button>
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="d-flex justify-content-center">
                         <button
@@ -261,8 +289,7 @@
                     data: data,
                     success: function (responsec) {
                         redirect_url = "{% url 'ordersuccess' %}"
-                        console.log(responsec.status);
-                        window.location.href = redirect_url
+                        window.location.href = redirect_url + '?order_number=' + responsec.trackno
                     }
                 })
                 // When ready to go live, remove the alert and show a success message within this page. For example:
@@ -280,6 +307,66 @@
 
 <script>
     $(document).ready(function () {
+
+        $('.codbutton').click(function (e) {
+            e.preventDefault;
+
+            var name = $("[name ='name']").val();
+            var email = $("[name ='email']").val();
+            var mobile = $("[name ='mobile']").val();
+            var address_1 = $("[name ='address_1']").val();
+            var address_2 = $("[name ='address_2']").val();
+            var city = $("[name ='city']").val();
+            var district = $("[name ='district']").val();
+            var state = $("[name ='state']").val();
+            var pincode = $("[name ='pincode']").val();
+            var token = $("[name = 'csrfmiddlewaretoken']").val()
+
+            if (name == "" || email == "" || mobile == "" || address_1 == "" || address_2 == "" || city == "" || district == "" || state == "" || pincode == "") {
+                alert("All fields are mandatory")
+                return false
+            } else {
+                data = {
+                    "name": name,
+                    "email": email,
+                    "mobile": mobile,
+                    "address_1": address_1,
+                    "address_2": address_2,
+                    "city": city,
+                    "district": district,
+                    "state": state,
+                    "pincode": pincode,
+                    "payment_mode": "COD",
+                    csrfmiddlewaretoken: token
+                }
+                $.ajax({
+                    method: "POST",
+                    url: "/place-order",
+                    data: data,
+                    success: function (responsec) {
+                        console.log(responsec.status);
+                        redirect_url = "{% url 'ordersuccess' %}"
+                        window.location.href = redirect_url + '?order_number=' + responsec.trackno
+                        // $.ajax({
+                        //     method: "GET",
+                        //     url: "/success-order",
+                        //     data: datac,
+                        //     success: function (responsed) {
+                        //         console.log(responsed.status);
+                        //         redirect_url = "{% url 'ordersuccess' %}"
+                        //         window.location.href = redirect_url + '?order_number=' + responsed.status
+                        //     }
+                        // })
+                        // redirect_url = "{% url 'ordersuccess' %}"
+                        // window.location.href = redirect_url
+                    }
+                })
+            }
+
+        })
+
+
+
 
         $('.paywithrazer').click(function (e) {
             e.preventDefault;
@@ -340,7 +427,7 @@
                                     success: function (responsec) {
                                         console.log(responsec.status);
                                         redirect_url = "{% url 'ordersuccess' %}"
-                                        window.location.href = redirect_url
+                                        window.location.href = redirect_url + '?order_number=' + responsec.trackno
 
                                     }
                                 })
@@ -388,15 +475,15 @@
                     console.log(response7.Status);
                     if (response7.Status == "Coupon Activated") {
                         window.location.reload();
-                    } else if (response7.Status == "Coupon changed"){
+                    } else if (response7.Status == "Coupon changed") {
                         window.location.reload();
                     } else {
-                    $('#msg').empty()
-                    $('#msg').html(response7.Status).fadeIn('fast').addClass('cart-styling').css('background-image', 'linear-gradient(to right, rgb(238, 10, 10), rgb(255, 255, 255)');
+                        $('#msg').empty()
+                        $('#msg').html(response7.Status).fadeIn('fast').addClass('cart-styling').css('background-image', 'linear-gradient(to right, rgb(238, 10, 10), rgb(255, 255, 255)');
 
-                    $('#msg').delay(2500).fadeOut('slow');
-                    
-                    // alert(response7.Status)
+                        $('#msg').delay(2500).fadeOut('slow');
+
+                        // alert(response7.Status)
                     }
                 }
             })
@@ -404,4 +491,5 @@
 
     })
 </script>
+
 {% endblock %}

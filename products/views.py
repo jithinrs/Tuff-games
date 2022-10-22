@@ -2,12 +2,14 @@ from datetime import date, datetime, timedelta
 import email
 from unicodedata import name
 from django.shortcuts import render,redirect
+from django.contrib.auth import authenticate, logout,login
+
 
 from django.utils import timezone
 
 from django.db.models import Sum, Q
 from authentications.models import Account
-from .models import Categories, Product, Specification, SubCategory,Coupon
+from .models import Categories, CategoryOffer, Product, Specification, SubCategory,Coupon, discount
 from django.views.generic import CreateView, ListView, UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.decorators import login_required
@@ -33,6 +35,31 @@ class adminrequiredmixin(AccessMixin):
             return render(request, '404error.html')
         return super(adminrequiredmixin, self).dispatch(request, *args, **kwargs)
 
+
+
+def admin_login(request):
+    if request.user.is_authenticated:
+        return redirect('adminbase')
+    if request.method == "POST":
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        try:
+            user = Account.objects.get(email=email, is_admin = True)
+        except :
+            messages.error(request,"user Does not exist..")
+        user = authenticate(request,email=email,password=password)
+        if user is not None:
+            login(request,user)
+            return redirect('adminbase') 
+    
+    return render(request, 'adminside/adminlogin.html')
+
+def adminlogout(request):
+    if request.method == 'POST':
+        logout(request)
+        return redirect('adminlogin')
+    return HttpResponse('<h1>404</h1>')
+
 class Categorylist(adminrequiredmixin, ListView):
     model = Categories
     template_name = 'adminside/categorylist.html'
@@ -48,9 +75,10 @@ class Categorylist(adminrequiredmixin, ListView):
 
 
 class Categoryadd(adminrequiredmixin, SuccessMessageMixin, CreateView):
-    model = Categories
+    # model = Categories
+    form_class = Categoryform
     success_message = 'Category Added'
-    fields = "__all__"
+    # fields = "__all__"
     template_name = "adminside/categoryadd.html"
 
 
@@ -65,12 +93,15 @@ class Categoryadd(adminrequiredmixin, SuccessMessageMixin, CreateView):
     # def form_valid(self, form):
     #     form.instance.title = self.title.title()
     #     return super(Categoryadd, self).form_valid(form)
+
+    
     
 
 class Categoryupdate(adminrequiredmixin ,SuccessMessageMixin, UpdateView):
     model = Categories
+    form_class = Categoryform
     success_message = 'Category Updated'
-    fields = "__all__"
+    # fields = "__all__"
     template_name = "adminside/categoryupdate.html"
 
 class SubCategorylist(adminrequiredmixin,ListView):
@@ -121,10 +152,11 @@ class Productlist(adminrequiredmixin, ListView):
             object_list = object_list.filter(product_name__icontains = key)
         return object_list
 
-class Productadd(adminrequiredmixin, SuccessMessageMixin, CreateView, ProductsAddforms):
-    model = Product
+class Productadd(adminrequiredmixin, SuccessMessageMixin, CreateView):
+    # model = Product
+    form_class = productform
     success_message = 'Product Added'
-    fields = "__all__"
+    # fields = "__all__"
     template_name = "adminside/productadd.html"
 
 
@@ -134,8 +166,9 @@ class Productadd(adminrequiredmixin, SuccessMessageMixin, CreateView, ProductsAd
 
 class Productupdate(SuccessMessageMixin, UpdateView):
     model = Product
+    form_class = productform
     success_message = 'Product Updated'
-    fields = "__all__"
+    # fields = "__all__"
     template_name = "adminside/productUpdate.html"
 
 class Productspec(SuccessMessageMixin,CreateView):
@@ -339,6 +372,14 @@ def update_admin_order(request,id):
 
 
 def sales_report(request):
+    today = datetime.today()
+    year = datetime.now().year
+    month = today.month
+    today_date=str(date.today())
+    year = today.year
+    years = []
+
+
     if request.method == "POST":
         start_date = request.POST.get('start_date')
         end_date = request.POST.get('end_date')
@@ -349,15 +390,10 @@ def sales_report(request):
         total = Sum('total_price'),).annotate(dcount=Sum('oderuser__quantity')).order_by()
         # total_payment_amount = Order.objects.filter(created_at__month=month).aggregate(Sum('total_price'))
     else:
-        today = datetime.today()
-        year = datetime.now().year
-        month = today.month
+       
 
         orders = Order.objects.filter(created_at__year = year,created_at__month=month).values('oderuser__product_id__product_name','oderuser__product_id__in_stock_total',
         total = Sum('total_price'),).annotate(dcount=Sum('oderuser__quantity')).order_by()
-        today_date=str(date.today())
-        year = today.year
-        years = []
         for i in range (10):
             val = year-i
             years.append(val)
@@ -377,7 +413,7 @@ def monthly_sales_report(request, id):
         'orders':orders,
         'today_date':today_date
     }
-    return render(request,'adminside/salesreport.html',context)  
+    return render(request,'adminside/sales-report-table.html',context)  
 
 def yearly_sales_report(request, id):
     orders = Order.objects.filter(created_at__year = id).values('oderuser__product_id__product_name','oderuser__product_id__in_stock_total',total = Sum('total_price'),).annotate(dcount=Sum('oderuser__quantity')).order_by()
@@ -387,7 +423,7 @@ def yearly_sales_report(request, id):
         'today_date':today_date
     }
 
-    return render(request,'adminside/sales-report.html',context)  
+    return render(request,'adminside/sales-report-table.html',context)  
 
 
 def adminProView(request,cat_slug, subcat_slug, pro_slug):
@@ -411,7 +447,38 @@ def couponshow(request):
         'coupon' : coupon
     }
 
-    return render(request, 'adminside/coupon.html', context)
+    return render(request, 'adminside/offer_management/coupon.html', context)
+
+def category_offers(request):
+    disc_category = Categories.objects.all()
+    context = {
+        'disc_category' : disc_category
+    }
+    return render(request, 'adminside/offer_management/category_offers.html', context)
+
+def add_category_offers(request):
+    if request.method == 'POST' :
+        category_name = request.POST.get('category_name')
+        category_offer = request.POST.get('category_offer')
+        category = Categories.objects.get(title = category_name)
+        category.category_offer =  category_offer
+        category.save()
+        messages.success(request,'Added Category offer success fully')
+        return redirect('category_offers')
+
+
+    
+
+def category_offers_delete(request, id):
+    if request.method=="POST":
+        try:
+            delete_cat = Categories.objects.get(id = id)
+            delete_cat.category_offer = 0
+            delete_cat.save()
+            return redirect('category_offers')
+        except:
+            return redirect('category_offers')
+
 
 def addcoupon(request):
     form = couponform()
@@ -422,10 +489,43 @@ def addcoupon(request):
             return redirect('couponshow')
         else:
             print(form.errors.as_data())
-            messages.error(request,"you are a FAILURE!!")
+            messages.error(request,"Enter correct data")
             return redirect('couponshow')
             
     context = {
         'form' : form
     }
-    return render(request, 'adminside/addcoupon.html', context)
+    return render(request, 'adminside/offer_management/addcoupon.html', context)
+
+def UpdateCoupon(request, id):
+    pass
+
+def DeleteCoupon(request, id):
+    if request.method == "POST":
+        coup = Coupon.objects.get(id = id)
+        coup.delete()
+        return redirect('couponshow')
+
+
+def ProductDiscount(request):
+    disc = Product.objects.all()
+    context = {
+        'disc' : disc
+    }
+    return render(request, 'adminside/offer_management/product_discount.html', context)
+
+def DeleteProductDiscount(request, id):
+    if request.method == "POST":
+        disc = discount.objects.get(id = id)
+        disc.delete()
+        return redirect('product_discount')
+
+def Product_discount_add(request):
+    if request.method == 'POST' :
+        category_name = request.POST.get('product_name')
+        category_offer = request.POST.get('product_offer')
+        product = Product.objects.get(product_name = category_name)
+        product.product_offer =  category_offer
+        product.save()
+        messages.success(request,'Added Product offer success fully')
+        return redirect('product_discount')

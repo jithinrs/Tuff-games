@@ -28,7 +28,7 @@ active
                         <div class="row">
 
 
-                            
+
                             <div class="col-6">
                                 {% for ord in obj.oderuser.all %}
                                 {% if forloop.counter != 1 %}
@@ -45,28 +45,34 @@ active
                             </div>
 
 
-                            
+
                             <div class="col-4">
                                 <span style="font-size:16px ;" class="text-dark">Ordered to:</span><br>
                                 {{obj.name}} | {{obj.mobile}} <br>
                                 <span style="font-size:16px ;" class="text-dark">Total price:
-                                    &nbsp;</span ><span style="color:black ; font-weight:500 ; font-size: 22px;">₹{{obj.total_price}}</span> <br>
-                                    
-                                <span style="font-size:16px ;" class="text-dark">Ordered status:</span> 
+                                    &nbsp;</span><span
+                                    style="color:black ; font-weight:500 ; font-size: 22px;">₹{{obj.total_price}}</span>
+                                <br>
+
+                                <span style="font-size:16px ;" class="text-dark">Ordered status:</span>
                                 {% if obj.status == "Order cancelled" or obj.status == "Returned" %}
-                                <span style="color:red ; font-weight: 600; font-size:16px ;" >{{obj.status}}</span>
+                                <span style="color:red ; font-weight: 600; font-size:16px ;">{{obj.status}}</span>
                                 {% elif obj.status == "Completed" %}
-                                <span style="color:green ; font-weight: 600; font-size:16px ;" >Delivered</span>
-                                    {% else %}
-                                <span style="color:blue ; font-weight: 600; font-size:16px ;" >{{obj.status}}</span>
+                                <span style="color:green ; font-weight: 600; font-size:16px ;">Delivered</span>
+                                {% else %}
+                                <span style="color:blue ; font-weight: 600; font-size:16px ;">{{obj.status}}</span>
                                 {% endif %}
+
+                                <a href="{% url 'accountmanage:userorderdetails' obj.tracking_no %}" style="font-size:18px ; font-weight:500 ; color:brown ; cursor: pointer;"> Invoice</a>
+
+                                
                             </div>
 
 
 
                             <div class="col-2 d-flex align-items-center">
                                 {% if obj.status == "Order cancelled" or obj.status == "Returned" %}
-                                
+
                                 {% elif obj.status == "Out for Delivery" or obj.status == "Completed" %}
                                 <button type="button" class="btn btn-danger" data-toggle="modal"
                                     data-target="#return{{obj.id}}">
@@ -77,7 +83,7 @@ active
                                     data-target="#cancel{{obj.id}}">
                                     Cancel order
                                 </button>
-                                
+
                                 {% endif %}
                             </div>
 

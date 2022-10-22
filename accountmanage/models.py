@@ -1,10 +1,11 @@
 
+from email.policy import default
 from enum import unique
 from itertools import product
 from pickle import FALSE
 from django.db import models
 from authentications.models import Account
-from products.models import Product
+from products.models import Product, discount
 
 
 # Create your models here.
@@ -81,4 +82,13 @@ class OrderItem(models.Model):
     def __str__(self):
         return f'{self.order_id.id} - {self.order_id.tracking_no}'
     
+    def get_total_price(self):
+        total_price = int(self.price) * int(self.quantity)
 
+        return total_price
+
+
+
+class successordermod(models.Model):
+    order_id = models.CharField(max_length = 150, null = True, blank = True)
+    status = models.BooleanField(default = False, null = True, blank = True)
