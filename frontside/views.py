@@ -1,5 +1,6 @@
 
 
+from logging import exception
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView, ListView, UpdateView, DetailView
 from accountmanage.models import Order, OrderItem, successordermod
@@ -93,8 +94,21 @@ def shopsubcat(request,cat_slug, subcat_slug):
 @never_cache
 def SingleProView(request,cat_slug, subcat_slug, pro_slug):
     product = Product.objects.filter(url_slug = pro_slug, subcategories_id__url_slug = subcat_slug)
+    testvalue = 0
+    try:
+        item = Cart.objects.get(user = request.user.id, product__url_slug = pro_slug)
+        testvalue = 1
+    except Exception as e:
+        print(e)
+        pass
+    try:
+        item = Cart.objects.get(session_id = _cart_id(request), product__url_slug = pro_slug)
+        testvalue = 1
+    except:
+        pass
     tests = {
-        'product' : product
+        'product' : product,
+        'testvalue' : testvalue
     }
     return render(request, 'userside/productpage.html', tests)
 
@@ -237,7 +251,7 @@ def deleteCartItem(request):
         return JsonResponse({"Status" : "Deleted Succesfully"})
     return redirect('/')
 
-
+@login_required(login_url='login')
 def checkout(request):
     if request.method == "POST":
         code = request.POST.get('code')

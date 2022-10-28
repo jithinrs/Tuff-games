@@ -28,9 +28,9 @@
                     <li class="main-nav-list">
                         
                         <a style="color:brown ; font-weight: 500;" href="{% url 'shopcat' cat_slug=cat.url_slug %}">{{cat.title}}
-                            {% for off in cat.catoffer.all %}
-                            <span class="text-primary"></i> @{{off.offer_perc}}%</span>
-                            {% endfor %}
+                            {% if cat.category_offer > 0 %}
+                            <i class="fa-solid fa-tags"></i> {{cat.category_offer}}% 
+                            {% endif %}
                         </a>
                         
                     </li>
@@ -47,7 +47,7 @@
                             aria-controls="shopcategories"><span class="lnr lnr-arrow-right"></span>{{cat.title}}<span
                                 class="number"></span>
                         </a>
-                        <ul class="collapse show" id="shopcategories{{cat.id}}" data-toggle="collapse" aria-expanded="false"
+                        <ul class="collapse " id="shopcategories{{cat.id}}" data-toggle="collapse" aria-expanded="false"
                             aria-controls="shopcategories">
                             {% for subcategory in cat.subcategories.all %}
                             <li class="main-nav-list child"><a
@@ -76,8 +76,12 @@
                                 <div class="product-details">
                                     <h6>{{pro.product_name}}</h6>
                                 <div class="price">
+                                    {% if pro.discountprice != pro.product_max_price %}
                                     <h6>₹{{pro.discountprice}}</h6>
                                     <h6 class="l-through">₹{{pro.product_max_price}}</h6>
+                                    {% else %}
+                                    <h6>{{pro.product_max_price}}</h6>
+                                    {% endif %}
                                 </div>
                                 <div class="prd-bottom">
                                     

@@ -9,6 +9,10 @@ TUFF Games | {{pro.product_name}}
 {% endfor %}
 {% endblock %}
 
+{% block customcss %}
+<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.min.css'>
+</link>
+{% endblock %}
 
 {% block testing %}
 <!-- <section>
@@ -73,18 +77,18 @@ TUFF Games | {{pro.product_name}}
             <div class="col-lg-5 offset-lg-1 mt-5">
                 <div class=" each-product s_product_">
                     <h3>{{pro.product_name}}</h3>
-                    
 
 
-                    
+
+
                     {% if pro.product_offer > 0 %}
                     <h2> <del style="color: black;">₹{{pro.product_max_price}} </del>
                         <span style="color: orange ;">
                             ₹{{ pro.discountprice }}
                         </span>
                     </h2>
-                    
-                    
+
+
                     {% else %}
                     <h2 style="color: black;"> ₹{{pro.product_max_price}}</h2>
                     <!-- <h2> <del style="color: black;">₹{{pro.product_max_price}} </del> </h2> -->
@@ -95,13 +99,14 @@ TUFF Games | {{pro.product_name}}
                                 {{pro.subcategories_id}}</a></li>
                         <li><a href="#"><span style="color:orange; font-weight:500;">Availibility :</span> <span
                                     style="color: black ;">
-                                    {% if pro.in_stock_total <= 10 %}
-                                    {{pro.in_stock_total}}  item remaining <span style="color: red;font-weight:500; font-size: 20px;"> HURRY!!! </span>
-                                    {% elif pro.in_stock_total == 0 %}
-                                    Out of stock
-                                    {% else %}
-                                    In stock
-                                    {% endif %}</span>
+                                    {% if pro.in_stock_total <= 10 and pro.in_stock_total > 0 %}
+                                        {{pro.in_stock_total}} item remaining <span
+                                            style="color: red;font-weight:500; font-size: 20px;"> HURRY!!! </span>
+                                        {% elif pro.in_stock_total == 0 %}
+                                        Out of stock
+                                        {% else %}
+                                        In stock
+                                        {% endif %}</span>
                             </a></li>
                     </ul>
                     <p class="mt-3">{{ pro.product_description }}</p>
@@ -117,7 +122,10 @@ TUFF Games | {{pro.product_name}}
                             onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) && sst > 1 ) result.value--;return false;"
                             class="reduced items-count decrement-btn" type="button"><i
                                 class="lnr lnr-chevron-down"></i></button>
-                    </div> -->
+                            </div> -->
+                    {% if testvalue == 1 %}
+                    <a href="{% url 'cart' %}" class="btn btn-primary">Go to cart</a>
+                    {% elif pro.in_stock_total != 0 %}
                     <div class="product_count mt-4">
                         {% csrf_token %}
                         <input type="hidden" value="{{ pro.id }}" class="prod_id">
@@ -130,10 +138,9 @@ TUFF Games | {{pro.product_name}}
                                 class="lnr lnr-chevron-down"></i></button>
                     </div>
                     <div class="card_area d-flex align-items-center">
-                        {% if pro.in_stock_total != 0 %}
                         <a class="primary-btn addtocartbtn" href="#" type="button">Add to Cart</a>
                         {% else %}
-                        <a class="genric-btn disable circle" href="#">Add to Cart</a>
+                        <!-- <a class="genric-btn disable circle" href="#">Add to Cart</a> -->
                         {% endif %}
                         <!-- <a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a> -->
                         <!-- <a style="margin-left:20px ; font-size: 40px; color: orangered;" class="icon_btn" href="#"><i class="lnr lnr lnr-heart "></i></a> -->
@@ -207,7 +214,7 @@ TUFF Games | {{pro.product_name}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
     integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js"></script>
 
 <script>
     $(document).ready(function () {
@@ -253,9 +260,21 @@ TUFF Games | {{pro.product_name}}
                 },
                 success: function (response) {
                     console.log(response);
+                    if (response.Status == "product added succesfully") {
+                        // swal("Good job!", "You clicked the button!", "success")
+                        swal({
+                            title: "Great!!", text: "You add the product to the cart", type:
+                                "success"
+                        }).then(function () {
+                            location.reload();
+                        }
+                        );
+                        // window.location.reload();
+                    } else {
                     $('#msg').empty()
                     $('#msg').html(response.Status).fadeIn('fast').addClass('cart-styling') //also show a success message 
                     $('#msg').delay(1000).fadeOut('slow');
+                    }
                 }
             })
 

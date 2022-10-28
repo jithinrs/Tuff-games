@@ -254,7 +254,19 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         jQuery(document).ready(() => {
+            var test =  document.getElementById("is_active").value
+            if(test == "True"){
+                console.log("work ayi mone");
+                document.getElementById("is_active").checked = true;
+            }
+            var test1 = document.getElementById("is_active")
 
+            test1.onchange = function(){
+                if(test1.checked){
+                    console.log("sambhavam thanne");
+                    test1.value = "True"
+                }
+            }
 
             $("#is_active").removeClass("form-control")
         })

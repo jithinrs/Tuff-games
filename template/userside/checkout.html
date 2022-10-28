@@ -3,6 +3,9 @@
 {% block title %}
 Checkout
 {% endblock %}
+{% block customcss %}
+<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.min.css'></link>  
+{% endblock %}
 {% block testing %}
 
 <section class="banner-area organic-breadcrumb mb-5">
@@ -219,6 +222,7 @@ Checkout
     src="https://www.paypal.com/sdk/js?client-id=AXVlzJOrsESjZE4ewaiA7nTH0ssjdm-_qlkwhFW2D3ooX7MSIPgOtTMccifJqRlVAHwfYHXPzwISBuch&currency=USD"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js"></script>  
 
 <script>
     paypal.Buttons({
@@ -235,7 +239,9 @@ Checkout
             var token = $("[name = 'csrfmiddlewaretoken']").val()
 
             if (name == "" || email == "" || mobile == "" || address_1 == "" || address_2 == "" || city == "" || district == "" || state == "" || pincode == "") {
-                alert("All fields are mandatory")
+                // alert("All fields are mandatory")
+                swal("Select an address before proceeding");  
+
                 return false
             } else {
                 return true;
@@ -323,7 +329,8 @@ Checkout
             var token = $("[name = 'csrfmiddlewaretoken']").val()
 
             if (name == "" || email == "" || mobile == "" || address_1 == "" || address_2 == "" || city == "" || district == "" || state == "" || pincode == "") {
-                alert("All fields are mandatory")
+                // alert("All fields are mandatory")
+                swal("Select an address before proceeding");  
                 return false
             } else {
                 data = {
@@ -383,7 +390,9 @@ Checkout
             var token = $("[name = 'csrfmiddlewaretoken']").val()
 
             if (name == "" || email == "" || mobile == "" || address_1 == "" || address_2 == "" || city == "" || district == "" || state == "" || pincode == "") {
-                alert("All fields are mandatory")
+                // alert("All fields are mandatory")
+                swal("Select an address before proceeding");  
+
                 return false
             } else {
                 $.ajax({

@@ -98,7 +98,7 @@ class Product(models.Model):
     url_slug = models.SlugField(max_length=255, unique=True)
     brand = models.CharField(max_length=255)
     product_offer = models.IntegerField(null = True, blank = True , default = 0, validators = [MinValueValidator(0), MaxValueValidator(50)])
-    product_max_price = models.CharField(max_length=255)
+    product_max_price = models.IntegerField()
     product_image = models.FileField()
     product_image_1 = models.FileField(default='')
     product_image_2 = models.FileField(default='')
@@ -129,6 +129,9 @@ class Product(models.Model):
     
     def discountprice(self):
         return int(self.product_max_price) * (1 - int(self.product_offer)/100)
+        
+    def categorydiscount(self):
+        return int(self.product_max_price) * (1 - int(self.categories_id.category_offer)/100)
     
 
 # class Cartmodel(models.Model):

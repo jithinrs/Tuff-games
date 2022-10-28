@@ -24,6 +24,9 @@ from django.core.paginator import Paginator
 from django.db.models import Count
 from authentications.form import UserForm 
 
+from django.contrib.admin.views.decorators import staff_member_required
+
+
 # Create your views here.
 #custom decorator
 
@@ -31,8 +34,10 @@ class adminrequiredmixin(AccessMixin):
     def dispatch(self, request, *args, **kwargs):
         # if not request.user.is_authenticated:
         #     return render(request, '404error.html')
-        if not request.user.is_admin:
-            return render(request, '404error.html')
+        if not request.user.is_authenticated:
+            return redirect('adminlogin')
+        elif not request.user.is_admin:
+            return redirect('adminlogin')
         return super(adminrequiredmixin, self).dispatch(request, *args, **kwargs)
 
 
@@ -59,6 +64,7 @@ def adminlogout(request):
         logout(request)
         return redirect('adminlogin')
     return HttpResponse('<h1>404</h1>')
+
 
 class Categorylist(adminrequiredmixin, ListView):
     model = Categories
@@ -132,7 +138,7 @@ class SubCategoryadd(adminrequiredmixin ,SuccessMessageMixin, CreateView):
     fields = "__all__"
     template_name = "adminside/subcategoryadd.html"
 
-class SubCategoryupdate(SuccessMessageMixin, UpdateView):
+class SubCategoryupdate(adminrequiredmixin, SuccessMessageMixin, UpdateView):
     model = SubCategory
     success_message = 'Sub Category Updated'
     fields = "__all__"
@@ -164,20 +170,20 @@ class Productadd(adminrequiredmixin, SuccessMessageMixin, CreateView):
     #     super().__init__(*args, **kwargs)
     #     self.fields['subcategories_id'].queryset = SubCategory.objects.none()
 
-class Productupdate(SuccessMessageMixin, UpdateView):
+class Productupdate(adminrequiredmixin, SuccessMessageMixin, UpdateView):
     model = Product
     form_class = productform
     success_message = 'Product Updated'
     # fields = "__all__"
     template_name = "adminside/productUpdate.html"
 
-class Productspec(SuccessMessageMixin,CreateView):
+class Productspec(adminrequiredmixin, SuccessMessageMixin,CreateView):
     model = Specification
     success_message: str = "Specification added"
     fields = "__all__"
     template_name = "adminside/productspec.html"
 
-
+@staff_member_required(login_url='adminlogin')
 def userdisplay(request):
     if 'key' in request.GET:
         key = request.GET.get('key')
@@ -196,6 +202,7 @@ def userdisplay(request):
 
     return render(request, 'adminside/userlist.html', context)
 
+@staff_member_required(login_url='adminlogin')
 def SingleProduct(request,cat_slug, subcat_slug, pro_slug):
     product = Product.objects.filter(url_slug = pro_slug, subcategories_id__url_slug = subcat_slug)
     tests = {
@@ -203,6 +210,7 @@ def SingleProduct(request,cat_slug, subcat_slug, pro_slug):
     }
     return render(request, 'adminside/productpage.html', tests)
 
+@staff_member_required(login_url='adminlogin')
 def category_delete(request, id):
     if request.method == 'POST':
         category_id = Categories.objects.get(pk=id)
@@ -212,12 +220,14 @@ def category_delete(request, id):
         category_id.delete()
         return redirect('categorylist')
 
+@staff_member_required(login_url='adminlogin')
 def subcategory_delete(request, id):
     if request.method == 'POST':
         subcategory_id = SubCategory.objects.get(pk=id)
         subcategory_id.delete()
         return redirect('categorylist')
 
+@staff_member_required(login_url='adminlogin')
 def product_delete(request, id):
     if request.method == 'POST':
         product_id = Product.objects.get(pk=id)
@@ -225,6 +235,7 @@ def product_delete(request, id):
         product_id.delete()
         return redirect('productlist')
 
+@staff_member_required(login_url='adminlogin')
 def adminbase(request):
     order = Order.objects.all().filter().order_by('-created_at')[:10]
 
@@ -340,6 +351,8 @@ def adminbase(request):
     }
     return render(request, 'adminside/adminhome.html', context)
 
+
+@staff_member_required(login_url='adminlogin')
 def adminorder(request):
     if 'key' in request.GET:
         key = request.GET.get('key')
@@ -361,6 +374,7 @@ def adminorder(request):
     }
     return render(request, 'adminside/orderlist.html', context)
 
+@staff_member_required(login_url='adminlogin')
 def update_admin_order(request,id):
     if request.method == 'POST':
         instance = get_object_or_404(Order, id=id)
@@ -370,7 +384,7 @@ def update_admin_order(request,id):
         return redirect('orderlist')
 
 
-
+@staff_member_required(login_url='adminlogin')
 def sales_report(request):
     today = datetime.today()
     year = datetime.now().year
@@ -405,6 +419,7 @@ def sales_report(request):
     }
     return render(request,'adminside/salesreport.html',context)  
 
+@staff_member_required(login_url='adminlogin')
 def monthly_sales_report(request, id):
     orders = Order.objects.filter(created_at__month = id).values('oderuser__product_id__product_name','oderuser__product_id__in_stock_total',total = Sum('total_price'),).annotate(dcount=Sum('oderuser__quantity')).order_by()
     print(orders)
@@ -415,6 +430,7 @@ def monthly_sales_report(request, id):
     }
     return render(request,'adminside/sales-report-table.html',context)  
 
+@staff_member_required(login_url='adminlogin')
 def yearly_sales_report(request, id):
     orders = Order.objects.filter(created_at__year = id).values('oderuser__product_id__product_name','oderuser__product_id__in_stock_total',total = Sum('total_price'),).annotate(dcount=Sum('oderuser__quantity')).order_by()
     today_date=str(date.today())
@@ -426,6 +442,7 @@ def yearly_sales_report(request, id):
     return render(request,'adminside/sales-report-table.html',context)  
 
 
+@staff_member_required(login_url='adminlogin')
 def adminProView(request,cat_slug, subcat_slug, pro_slug):
     product = Product.objects.filter(url_slug = pro_slug, subcategories_id__url_slug = subcat_slug)
     tests = {
@@ -435,12 +452,12 @@ def adminProView(request,cat_slug, subcat_slug, pro_slug):
     # return render(request, 'adminside/adminbaseori.html', tests)
 
 
-
+@staff_member_required(login_url='adminlogin')
 def selectsubfromcat(request):
     pass
 
 
-
+@staff_member_required(login_url='adminlogin')
 def couponshow(request):
     coupon = Coupon.objects.all()
     context = {
@@ -449,6 +466,7 @@ def couponshow(request):
 
     return render(request, 'adminside/offer_management/coupon.html', context)
 
+@staff_member_required(login_url='adminlogin')
 def category_offers(request):
     disc_category = Categories.objects.all()
     context = {
@@ -456,6 +474,7 @@ def category_offers(request):
     }
     return render(request, 'adminside/offer_management/category_offers.html', context)
 
+@staff_member_required(login_url='adminlogin')
 def add_category_offers(request):
     if request.method == 'POST' :
         category_name = request.POST.get('category_name')
@@ -468,6 +487,7 @@ def add_category_offers(request):
 
 
     
+@staff_member_required(login_url='adminlogin')
 
 def category_offers_delete(request, id):
     if request.method=="POST":
@@ -479,7 +499,7 @@ def category_offers_delete(request, id):
         except:
             return redirect('category_offers')
 
-
+@staff_member_required(login_url='adminlogin')
 def addcoupon(request):
     form = couponform()
     if request.method == "POST":
@@ -499,14 +519,14 @@ def addcoupon(request):
 
 def UpdateCoupon(request, id):
     pass
-
+@staff_member_required(login_url='adminlogin')
 def DeleteCoupon(request, id):
     if request.method == "POST":
         coup = Coupon.objects.get(id = id)
         coup.delete()
         return redirect('couponshow')
 
-
+@staff_member_required(login_url='adminlogin')
 def ProductDiscount(request):
     disc = Product.objects.all()
     context = {
@@ -514,12 +534,14 @@ def ProductDiscount(request):
     }
     return render(request, 'adminside/offer_management/product_discount.html', context)
 
+@staff_member_required(login_url='adminlogin')
 def DeleteProductDiscount(request, id):
     if request.method == "POST":
         disc = discount.objects.get(id = id)
         disc.delete()
         return redirect('product_discount')
 
+@staff_member_required(login_url='adminlogin')
 def Product_discount_add(request):
     if request.method == 'POST' :
         category_name = request.POST.get('product_name')
