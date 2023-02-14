@@ -413,7 +413,7 @@ Checkout
                             "order_id": response.client.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
                             // "callback_url": "https://eneqd3r9zrjok.x.pipedream.net/",
                             "handler": function (responseb) {
-                                // alert(responseb.razorpay_payment_id + "poda");
+                                
 
                                 data = {
                                     "name": name,
@@ -469,7 +469,7 @@ Checkout
 
         $('.couponbutton').click(function (e) {
             e.preventDefault;
-            // console.log("podapatti workjsahdjh");
+            
             var coupon = $("[name ='coupon']").val();
             var token = $("[name = 'csrfmiddlewaretoken']").val()
             data = {

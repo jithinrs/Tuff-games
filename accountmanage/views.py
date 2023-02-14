@@ -148,7 +148,7 @@ def user_order_details(request, track):
 
 
 # def deletey_address(request, id):
-#     print("poda?")
+#     
 #     if request.method == "POST":
 #         address=useraddress.objects.get(pk = id)
 #         messages.success(request,"Address Deleted")
@@ -156,7 +156,7 @@ def user_order_details(request, track):
 #         return redirect('useraccount')
 
 def delete_address(request,*args,**kwargs):
-    print("poda?")
+
     id=kwargs.get('id')
     address=useraddress.objects.get(pk = id)
     messages.success(request,"Address Deleted")

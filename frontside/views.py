@@ -265,14 +265,14 @@ def checkout(request):
                 
             print(value.offer_value)
             try:
-                print('helloda entharo ayi')
+                
                 test = Couponuser.objects.filter(user = request.user).exists()
                 print(test)
                 if test:
-                    print("test")
+                   
                     current1 = Couponuser.objects.get(user = request.user)
                     if current1.coupon_code != code:
-                        print("ivide ethiyo")
+                       
                         current1.coupon_code = code
                         current1.coupon_value = value.offer_value
                         current1.coupon_modal = value
@@ -287,7 +287,7 @@ def checkout(request):
                     coupon_value = value.offer_value   
                 )
             except Exception as e:
-                print("entho")
+                
                 print(e)
                 pass
             return JsonResponse({"Status" : "Coupon Activated"})
@@ -433,13 +433,13 @@ def placeorder(request):
 
             paymode = request.POST.get('payment_mode')
             if paymode == "Paid by Razerpay":
-                print("hello")
+                
                 return JsonResponse({"status" : "jtest work" , "trackno" : tracking_no})
             if paymode == "Paid by PayPal":
-                print("hello")
+                
                 return JsonResponse({"status" : "paypal test work", "trackno" : tracking_no})
             if paymode == "COD":
-                print("work ayennu thonunnu")
+               
                 return JsonResponse({"status" : "cod test work", "trackno" : tracking_no})
             return redirect('ordersuccess')
         else:
@@ -454,14 +454,14 @@ def success_order(request):
     test =  successordermod.objects.get(order_id = order_number,)
     print(test)
     # transID = request.GET.get('payment_id')
-    print("ivide ethiyo")
+    
     try:
         test =  successordermod.objects.get(order_id = order_number, status = False)
         test.status = True
         test.save()
         order = Order.objects.get(tracking_no = order_number)
         items = OrderItem.objects.filter(order_id = order.id)
-        print("what happended")
+       
         context = {
             # "status" : order_number
             'obj' : order,
@@ -550,10 +550,10 @@ def checkoutaddaddr(request):
 def cancelorder(request, id):
     if request.method == "POST":
         current_order = Order.objects.get(id = id)
-        print("podare")
+       
         if current_order.status != ("Order cancelled" or "Returned" or "Out for Delivery"):
             current_order.status = "Order cancelled"
-            print("poda")
+            
             current_order.save()
     return redirect('accountmanage:userorderhistory')
 
@@ -606,9 +606,9 @@ def testing(request):
     coup1 = Coupon.objects.get(code = "testing")
     print(coup1.valid_from)
     if not coup1.valid_from <= f and coup1.valid_to >= f:
-        print("work aya")
+        
     if coup:
-        print("poda")
+        
     for c in coup:
         print(c.valid_to)
     context = {

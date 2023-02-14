@@ -86,7 +86,7 @@ def Login(request):
                 print("test1")
                 print(cart)
                 if cart:
-                    print("poda")
+                   
                     cart = Cart.objects.filter(session_id = _cart_id(request))
                     for item in cart:
                         try:
@@ -96,7 +96,7 @@ def Login(request):
                             carter.save()
                             item.delete()
                         except:
-                            print("naari")
+                           
                             item.user = user
                             item.save()
 
@@ -145,13 +145,13 @@ def verify_loginotp(request):
         user = Account.objects.get(mobile = mobile)
         if verify:
             mobile  = request.session['mobile']
-            print('podapatti')
+            
             try:
                 cart = Cart.objects.filter(session_id = _cart_id(request)).exists()
                 print("test1")
                 print(cart)
                 if cart:
-                    print("poda")
+                    
                     cart = Cart.objects.filter(session_id = _cart_id(request))
                     for item in cart:
                         try:
@@ -161,7 +161,7 @@ def verify_loginotp(request):
                             carter.save()
                             item.delete()
                         except:
-                            print("naari")
+                            
                             item.user = user
                             item.save()
 
